@@ -5,6 +5,8 @@ import { PlayingCard } from "@/components/PlayingCard";
 import { CategoryView } from "@/components/CategoryView";
 import { SafeModal } from "@/components/SafeModal";
 import { WhiteRabbit } from "@/components/WhiteRabbit";
+import { TuckBox } from "@/components/TuckBox";
+import { ArcadeModal } from "@/components/ArcadeModal";
 import { usePortfolioStore } from "@/store";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -27,12 +29,9 @@ export default function Home() {
   const [isSafeOpen, setIsSafeOpen] = useState(false);
 
   const handleCardClick = (id: string) => {
-    // If it's burned, revive it!
-    if (id.startsWith("ace-")) {
-      const category = id as "ace-spades" | "ace-clubs" | "ace-diamonds" | "ace-hearts";
-      if (burnedCategories.includes(category)) {
-        reviveCategory(category);
-      }
+    const category = id as "ace-spades" | "ace-clubs" | "ace-diamonds" | "ace-hearts";
+    if (burnedCategories.includes(category)) {
+      reviveCategory(category);
     }
     setActiveCardId(id);
   };
@@ -101,35 +100,32 @@ export default function Home() {
   }, { scope: deckRef });
 
   return (
-    <main className={`min-h-screen transition-colors duration-1000 ${isJokerEclipse ? "bg-black text-ivory invert" : "bg-ivory"}`}>
+    <main className="min-h-screen bg-ivory">
       {/* Scroll-locked Hero */}
       <HeroSequence />
 
       {/* Main Content: The Aces & Jokers */}
-      <section ref={deckRef} className="relative z-10 py-32 flex flex-col items-center [perspective:2000px]">
-        <h2 className="font-serif text-3xl mb-16 text-charcoal">Select Your Discipline</h2>
+      <section ref={deckRef} className="relative z-10 py-32 flex flex-col items-center [perspective:2000px] min-h-[150vh]">
+        <h2 className="font-serif text-3xl mb-32 text-charcoal">Select Your Discipline</h2>
         
-        <div className="flex flex-wrap justify-center gap-8 px-4 max-w-7xl">
-          {ACES.map((ace) => (
-            <div key={ace.id} className="scatter-card">
-              <PlayingCard
-                id={ace.id}
-                suit={ace.suit}
-                value={ace.value}
-                title={ace.title}
-                isBurned={burnedCategories.includes(ace.id as "ace-spades" | "ace-clubs" | "ace-diamonds" | "ace-hearts")}
-                isMarked={ace.isMarked}
-                onMarkClick={() => setIsSafeOpen(true)}
-                onClick={() => handleCardClick(ace.id)}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* The Jokers */}
-        <h2 className="font-serif text-3xl mt-24 mb-16 text-charcoal">The Magician</h2>
-        <div className="flex flex-wrap justify-center gap-16 px-4 max-w-5xl">
-            <div id="card-black-joker" className="scatter-card">
+        <TuckBox>
+          <div className="flex flex-wrap justify-center gap-8 px-4 w-[1200px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+            {ACES.map((ace) => (
+              <div key={ace.id} className="scatter-card pointer-events-auto">
+                <PlayingCard
+                  id={ace.id}
+                  suit={ace.suit}
+                  value={ace.value}
+                  title={ace.title}
+                  isBurned={burnedCategories.includes(ace.id as "ace-spades" | "ace-clubs" | "ace-diamonds" | "ace-hearts")}
+                  isMarked={ace.isMarked}
+                  onMarkClick={() => setIsSafeOpen(true)}
+                  onClick={() => handleCardClick(ace.id)}
+                />
+              </div>
+            ))}
+            
+            <div id="card-black-joker" className="scatter-card pointer-events-auto">
               <PlayingCard
                 id="black-joker"
                 suit="♠"
@@ -140,7 +136,7 @@ export default function Home() {
               />
             </div>
             
-            <div className="z-10 scatter-card">
+            <div className="scatter-card pointer-events-auto">
               <PlayingCard
                 id="red-joker"
                 suit="♥"
@@ -153,7 +149,8 @@ export default function Home() {
                 onDragEnd={handleJokerDragEnd}
               />
             </div>
-        </div>
+          </div>
+        </TuckBox>
       </section>
 
       {/* Expanded Card Overlay (Shared Layout Animation) */}
@@ -173,15 +170,13 @@ export default function Home() {
             >
               {activeCardId.startsWith("ace-") ? (
                 <CategoryView categoryId={activeCardId} onClose={handleClose} />
+              ) : activeCardId === "red-joker" ? (
+                <ArcadeModal onClose={() => setActiveCardId(null)} />
               ) : (
                 <div className="flex-grow flex flex-col items-center justify-center p-12 text-center">
-                  <h2 className="text-5xl font-serif mb-6">
-                    {activeCardId === "black-joker" ? "About Me" : "The Playground"}
-                  </h2>
+                  <h2 className="text-5xl font-serif mb-6">About Me</h2>
                   <p className="text-xl max-w-2xl text-gray-700">
-                    {activeCardId === "black-joker" 
-                      ? "I am Aleister Vance. An engineer, a developer, and a magician. Here is where the resume goes." 
-                      : "Welcome to the playground. Experimental projects, raw code, and untamed ideas live here."}
+                    I am Aleister Vance. An engineer, a developer, and a magician. Here is where the resume goes.
                   </p>
                   <button 
                     onClick={handleClose}
@@ -192,6 +187,60 @@ export default function Home() {
                 </div>
               )}
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* The Joker Eclipse (Prank) */}
+      <AnimatePresence>
+        {isJokerEclipse && (
+          <motion.div
+            initial={{ opacity: 0, scale: 1.5, rotate: 10, filter: "invert(0)" }}
+            animate={{ opacity: 1, scale: 1, rotate: 0, filter: "invert(1)" }}
+            transition={{ duration: 0.5, ease: "easeIn" }}
+            className="fixed inset-0 z-[999999] bg-black text-white flex flex-col items-center justify-center overflow-hidden"
+          >
+            {/* Chaotic UI elements flying around */}
+            {Array.from({ length: 20 }).map((_, i) => {
+              // Deterministic pseudo-random for render purity
+              const rand1 = (Math.sin(i + 1) + 1) / 2;
+              const rand2 = (Math.cos(i + 1) + 1) / 2;
+              const rand3 = (Math.sin(i * 10) + 1) / 2;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ x: 0, y: 0 }}
+                  animate={{ 
+                    x: (rand1 - 0.5) * window.innerWidth,
+                    y: (rand2 - 0.5) * window.innerHeight,
+                    rotate: rand3 * 360
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, repeatType: "mirror" }}
+                  className="absolute text-6xl text-red-600 opacity-20 font-serif"
+                >
+                  HAHA
+                </motion.div>
+              );
+            })}
+
+            <motion.h1 
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1, duration: 2 }}
+              className="font-serif text-5xl md:text-8xl text-red-600 z-10"
+            >
+              Why so serious?
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 4 }}
+              className="mt-8 font-sans text-xl z-10 animate-pulse cursor-pointer hover:text-red-400"
+              onClick={() => window.location.reload()}
+            >
+              [ Click to revive ]
+            </motion.p>
           </motion.div>
         )}
       </AnimatePresence>
