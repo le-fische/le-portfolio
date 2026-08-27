@@ -53,45 +53,49 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef} className="relative w-full flex justify-center [perspective:2000px] z-20">
-      <div 
-        ref={boxRef} 
-        className="relative w-52 h-72 [transform-style:preserve-3d]"
-      >
-        {/* Front Face */}
-        <div className="absolute inset-0 bg-[#0f0f0f] border-2 border-gold rounded-lg [transform:translateZ(30px)] flex flex-col items-center justify-center p-4 shadow-2xl [backface-visibility:hidden]">
-          <h3 className="font-serif text-gold text-2xl uppercase tracking-widest text-center border-b border-gold pb-2 mb-2 w-full">Vance</h3>
-          <p className="text-zinc-500 font-sans text-xs tracking-[0.3em] uppercase text-center">Playing Cards</p>
-          <div className="flex-grow flex items-center justify-center">
-            <span className="text-5xl text-gold opacity-50">♠</span>
-          </div>
-          <p className="text-gold font-serif text-sm tracking-widest uppercase">Premium Quality</p>
-        </div>
+    <div ref={containerRef} className="relative w-full flex justify-center items-center z-20 min-h-[300px]">
+      
+      {/* The Cards (Siblings, so they don't fade out when the box fades out) */}
+      <div className="absolute inset-0 flex items-center justify-center z-10">
+        {children}
+      </div>
 
-        {/* Back Face */}
-        <div className="absolute inset-0 bg-[#0a0a0a] border border-zinc-800 rounded-lg [transform:translateZ(-30px)__rotateY(180deg)] [backface-visibility:hidden]" />
-
-        {/* Left Face */}
-        <div className="absolute top-0 left-0 w-[60px] h-full bg-[#141414] border border-zinc-800 [transform:rotateY(-90deg)_translateZ(30px)] origin-left" />
-
-        {/* Right Face */}
-        <div className="absolute top-0 right-0 w-[60px] h-full bg-[#141414] border border-zinc-800 [transform:rotateY(90deg)_translateZ(30px)] origin-right" />
-
-        {/* Bottom Face */}
-        <div className="absolute bottom-0 left-0 w-full h-[60px] bg-[#0a0a0a] border border-zinc-800 [transform:rotateX(-90deg)_translateZ(30px)] origin-bottom" />
-
-        {/* Top Face (The Lid) */}
+      {/* The 3D Box with its own perspective wrapper */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30 [perspective:2000px]">
         <div 
-          ref={lidRef}
-          className="absolute top-0 left-0 w-full h-[60px] bg-[#1a1a1a] border-2 border-gold [transform:rotateX(90deg)_translateZ(30px)] origin-top flex items-center justify-center"
+          ref={boxRef} 
+          className="relative w-52 h-72 [transform-style:preserve-3d]"
         >
-          {/* A small seal on the lid */}
-          <div className="w-8 h-4 bg-red-800 border border-red-900 absolute -bottom-2 z-10 rounded-sm" />
-        </div>
+          {/* Front Face */}
+          <div className="absolute inset-0 bg-[#0f0f0f] border-2 border-gold rounded-lg [transform:translateZ(30px)] flex flex-col items-center justify-center p-4 shadow-2xl [backface-visibility:hidden]">
+            <h3 className="font-serif text-gold text-2xl uppercase tracking-widest text-center border-b border-gold pb-2 mb-2 w-full">Vance</h3>
+            <p className="text-zinc-500 font-sans text-xs tracking-[0.3em] uppercase text-center">Playing Cards</p>
+            <div className="flex-grow flex items-center justify-center">
+              <span className="text-5xl text-gold opacity-50">♠</span>
+            </div>
+            <p className="text-gold font-serif text-sm tracking-widest uppercase">Premium Quality</p>
+          </div>
 
-        {/* The Cards inside the box */}
-        <div className="absolute inset-0 [transform:translateZ(0px)] flex items-center justify-center">
-          {children}
+          {/* Back Face */}
+          <div className="absolute inset-0 bg-[#0a0a0a] border border-zinc-800 rounded-lg [transform:translateZ(-30px)__rotateY(180deg)] [backface-visibility:hidden]" />
+
+          {/* Left Face */}
+          <div className="absolute top-0 left-0 w-[60px] h-full bg-[#141414] border border-zinc-800 [transform:rotateY(-90deg)_translateZ(30px)] origin-left" />
+
+          {/* Right Face */}
+          <div className="absolute top-0 right-0 w-[60px] h-full bg-[#141414] border border-zinc-800 [transform:rotateY(90deg)_translateZ(30px)] origin-right" />
+
+          {/* Bottom Face */}
+          <div className="absolute bottom-0 left-0 w-full h-[60px] bg-[#0a0a0a] border border-zinc-800 [transform:rotateX(-90deg)_translateZ(30px)] origin-bottom" />
+
+          {/* Top Face (The Lid) */}
+          <div 
+            ref={lidRef}
+            className="absolute top-0 left-0 w-full h-[60px] bg-[#1a1a1a] border-2 border-gold [transform:rotateX(90deg)_translateZ(30px)] origin-top flex items-center justify-center"
+          >
+            {/* A small seal on the lid */}
+            <div className="w-8 h-4 bg-red-800 border border-red-900 absolute -bottom-2 z-10 rounded-sm" />
+          </div>
         </div>
       </div>
     </div>

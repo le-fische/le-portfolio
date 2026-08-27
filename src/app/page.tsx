@@ -63,10 +63,10 @@ export default function Home() {
   useGSAP(() => {
     const cards = gsap.utils.toArray<HTMLElement>(".scatter-card");
     
-    // Start all cards stacked in the center, deep in z-space
+    // Start all cards stacked exactly in the center, deep in z-space
     gsap.set(cards, { 
-      x: () => window.innerWidth / 2 - 100, // Roughly center of screen
-      y: 300, 
+      x: 0,
+      y: 0, 
       z: -1000,
       rotationX: () => (Math.random() - 0.5) * 180,
       rotationY: () => (Math.random() - 0.5) * 180,
@@ -84,10 +84,10 @@ export default function Home() {
       }
     });
 
-    // Animate them out to their natural grid positions, flying forward
+    // Animate them out to their hardcoded target positions, flying forward
     tl.to(cards, {
-      x: 0,
-      y: 0,
+      x: (_, target) => parseFloat(target.dataset.targetX || "0"),
+      y: (_, target) => parseFloat(target.dataset.targetY || "0"),
       z: 0,
       rotationX: 0,
       rotationY: 0,
@@ -105,27 +105,43 @@ export default function Home() {
       <HeroSequence />
 
       {/* Main Content: The Aces & Jokers */}
-      <section ref={deckRef} className="relative z-10 py-32 flex flex-col items-center [perspective:2000px] min-h-[150vh]">
+      <section ref={deckRef} className="relative z-10 py-32 flex flex-col items-center min-h-[150vh]">
         <h2 className="font-serif text-3xl mb-32 text-charcoal">Select Your Discipline</h2>
         
         <TuckBox>
-          <div className="flex flex-wrap justify-center gap-8 px-4 w-[1200px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-            {ACES.map((ace) => (
-              <div key={ace.id} className="scatter-card pointer-events-auto">
-                <PlayingCard
-                  id={ace.id}
-                  suit={ace.suit}
-                  value={ace.value}
-                  title={ace.title}
-                  isBurned={burnedCategories.includes(ace.id as "ace-spades" | "ace-clubs" | "ace-diamonds" | "ace-hearts")}
-                  isMarked={ace.isMarked}
-                  onMarkClick={() => setIsSafeOpen(true)}
-                  onClick={() => handleCardClick(ace.id)}
-                />
-              </div>
-            ))}
+          <div className="relative w-full h-full flex items-center justify-center pointer-events-none">
+            {ACES.map((ace, i) => {
+              // Target positions for the grid
+              const targetX = (i - 1.5) * 220; // 4 cards: -330, -110, 110, 330
+              const targetY = -160;
+
+              return (
+                <div 
+                  key={ace.id} 
+                  className="scatter-card absolute pointer-events-auto"
+                  data-target-x={targetX}
+                  data-target-y={targetY}
+                >
+                  <PlayingCard
+                    id={ace.id}
+                    suit={ace.suit}
+                    value={ace.value}
+                    title={ace.title}
+                    isBurned={burnedCategories.includes(ace.id as "ace-spades" | "ace-clubs" | "ace-diamonds" | "ace-hearts")}
+                    isMarked={ace.isMarked}
+                    onMarkClick={() => setIsSafeOpen(true)}
+                    onClick={() => handleCardClick(ace.id)}
+                  />
+                </div>
+              );
+            })}
             
-            <div id="card-black-joker" className="scatter-card pointer-events-auto">
+            <div 
+              id="card-black-joker" 
+              className="scatter-card absolute pointer-events-auto"
+              data-target-x={-120}
+              data-target-y={180}
+            >
               <PlayingCard
                 id="black-joker"
                 suit="♠"
@@ -136,7 +152,11 @@ export default function Home() {
               />
             </div>
             
-            <div className="scatter-card pointer-events-auto">
+            <div 
+              className="scatter-card absolute pointer-events-auto"
+              data-target-x={120}
+              data-target-y={180}
+            >
               <PlayingCard
                 id="red-joker"
                 suit="♥"
