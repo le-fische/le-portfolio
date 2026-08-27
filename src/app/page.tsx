@@ -13,7 +13,23 @@ const ACES = [
 ];
 
 export default function Home() {
-  const { activeCardId, setActiveCardId } = usePortfolioStore();
+  const { activeCardId, setActiveCardId, burnedCategories, burnCategory, reviveCategory } = usePortfolioStore();
+
+  const handleCardClick = (id: string) => {
+    // If it's burned, revive it!
+    const category = id as "ace-spades" | "ace-clubs" | "ace-diamonds" | "ace-hearts";
+    if (burnedCategories.includes(category)) {
+      reviveCategory(category);
+    }
+    setActiveCardId(id);
+  };
+
+  const handleClose = () => {
+    if (activeCardId) {
+      burnCategory(activeCardId as "ace-spades" | "ace-clubs" | "ace-diamonds" | "ace-hearts");
+      setActiveCardId(null);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-ivory">
@@ -32,7 +48,8 @@ export default function Home() {
               suit={ace.suit}
               value={ace.value}
               title={ace.title}
-              onClick={() => setActiveCardId(ace.id)}
+              isBurned={burnedCategories.includes(ace.id as "ace-spades" | "ace-clubs" | "ace-diamonds" | "ace-hearts")}
+              onClick={() => handleCardClick(ace.id)}
             />
           ))}
         </div>
@@ -46,7 +63,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-12 bg-black/40 backdrop-blur-sm"
-            onClick={() => setActiveCardId(null)}
+            onClick={handleClose}
           >
             <motion.div
               layoutId={`card-${activeCardId}`}
@@ -57,7 +74,7 @@ export default function Home() {
               <div className="p-8 border-b border-gray-200 flex justify-between items-center">
                 <h2 className="text-4xl font-serif">Category Details</h2>
                 <button 
-                  onClick={() => setActiveCardId(null)}
+                  onClick={handleClose}
                   className="text-2xl font-sans hover:scale-110 transition-transform"
                 >
                   ✕

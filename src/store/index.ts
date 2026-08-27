@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type Category = 'Spades' | 'Clubs' | 'Diamonds' | 'Hearts';
+type Category = 'ace-spades' | 'ace-clubs' | 'ace-diamonds' | 'ace-hearts';
 
 interface PortfolioState {
   // Navigation & State

@@ -8,21 +8,32 @@ interface PlayingCardProps {
   value: string;
   title?: string;
   isFaceDown?: boolean;
+  isBurned?: boolean;
   className?: string;
   onClick?: () => void;
 }
 
-export function PlayingCard({ id, suit, value, title, isFaceDown = false, className = "", onClick }: PlayingCardProps) {
+export function PlayingCard({ id, suit, value, title, isFaceDown = false, isBurned = false, className = "", onClick }: PlayingCardProps) {
   const isRed = suit === "♦" || suit === "♥";
   
   return (
     <motion.div
       layoutId={`card-${id}`}
       onClick={onClick}
-      className={`relative w-48 h-72 rounded-xl bg-white shadow-xl cursor-pointer overflow-hidden border border-gray-200 flex flex-col justify-between p-4 ${className}`}
+      className={`relative w-48 h-72 rounded-xl bg-white shadow-xl cursor-pointer overflow-hidden border flex flex-col justify-between p-4 transition-colors duration-500
+        ${isBurned ? "border-gray-800 bg-gray-200 opacity-90 sepia-[.3]" : "border-gray-200"}
+        ${className}
+      `}
       whileHover={{ y: -10, scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
     >
+      {/* Burn mark overlays */}
+      {isBurned && (
+        <>
+          <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-black/40 to-transparent rounded-tr-xl mix-blend-multiply" />
+          <div className="absolute bottom-0 left-0 w-20 h-20 bg-gradient-to-tr from-black/60 to-transparent rounded-bl-xl mix-blend-multiply" />
+        </>
+      )}
       {isFaceDown ? (
         <div className="absolute inset-0 bg-[url('/card-back-pattern.png')] bg-cover bg-center border-4 border-white opacity-80" />
       ) : (
