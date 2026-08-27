@@ -64,12 +64,15 @@ export default function Home() {
   useGSAP(() => {
     const cards = gsap.utils.toArray<HTMLElement>(".scatter-card");
     
-    // Start all cards stacked in the center
+    // Start all cards stacked in the center, deep in z-space
     gsap.set(cards, { 
       x: () => window.innerWidth / 2 - 100, // Roughly center of screen
       y: 300, 
-      rotation: () => Math.random() * 360,
-      scale: 0.5,
+      z: -1000,
+      rotationX: () => (Math.random() - 0.5) * 180,
+      rotationY: () => (Math.random() - 0.5) * 180,
+      rotationZ: () => Math.random() * 360,
+      scale: 0.2,
       opacity: 0 
     });
 
@@ -77,20 +80,23 @@ export default function Home() {
       scrollTrigger: {
         trigger: deckRef.current,
         start: "top center",
-        end: "+=100%",
+        end: "+=150%", // Longer scrub for smoother fly-out
         scrub: 1,
       }
     });
 
-    // Animate them out to their natural grid positions
+    // Animate them out to their natural grid positions, flying forward
     tl.to(cards, {
       x: 0,
       y: 0,
-      rotation: 0,
+      z: 0,
+      rotationX: 0,
+      rotationY: 0,
+      rotationZ: 0,
       scale: 1,
       opacity: 1,
       stagger: 0.05,
-      ease: "back.out(1.7)",
+      ease: "expo.out",
     });
   }, { scope: deckRef });
 
@@ -100,7 +106,7 @@ export default function Home() {
       <HeroSequence />
 
       {/* Main Content: The Aces & Jokers */}
-      <section ref={deckRef} className="relative z-10 py-32 flex flex-col items-center">
+      <section ref={deckRef} className="relative z-10 py-32 flex flex-col items-center [perspective:2000px]">
         <h2 className="font-serif text-3xl mb-16 text-charcoal">Select Your Discipline</h2>
         
         <div className="flex flex-wrap justify-center gap-8 px-4 max-w-7xl">

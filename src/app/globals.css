@@ -16,6 +16,15 @@ body {
   overflow-x: hidden;
 }
 
+@media (min-width: 768px) {
+  body {
+    cursor: none;
+  }
+  a, button, [role="button"] {
+    cursor: none;
+  }
+}
+
 /* Custom scrollbar for an elegant feel */
 ::-webkit-scrollbar {
   width: 8px;
@@ -29,4 +38,12 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #aaa;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fadeIn 2s ease-in-out 6s forwards;
 }

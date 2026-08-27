@@ -1,0 +1,44 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import gsap from "gsap";
+
+export function Preloader() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Prevent scrolling while loading
+    document.body.style.overflow = "hidden";
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        setIsLoading(false);
+        document.body.style.overflow = "";
+      }
+    });
+
+    tl.to(".preloader-text-1", { opacity: 1, y: 0, duration: 1, ease: "power3.out" })
+      .to(".preloader-text-1", { opacity: 0, y: -20, duration: 0.8, ease: "power3.in", delay: 0.5 })
+      .to(".preloader-text-2", { opacity: 1, y: 0, duration: 1, ease: "power3.out" })
+      .to(".preloader-text-2", { opacity: 0, y: -20, duration: 0.8, ease: "power3.in", delay: 0.5 })
+      .to(".preloader-bg", { yPercent: -100, duration: 1.2, ease: "expo.inOut" });
+
+  }, []);
+
+  if (!isLoading) return null;
+
+  return (
+    <div className="preloader-bg fixed inset-0 z-[10000] bg-zinc-950 flex items-center justify-center pointer-events-none">
+      <div className="text-center absolute">
+        <h1 className="preloader-text-1 opacity-0 translate-y-10 font-serif text-3xl md:text-5xl text-zinc-300 tracking-widest uppercase">
+          Aleister Vance
+        </h1>
+      </div>
+      <div className="text-center absolute">
+        <h1 className="preloader-text-2 opacity-0 translate-y-10 font-serif text-2xl md:text-4xl text-zinc-500 italic">
+          Are you watching closely?
+        </h1>
+      </div>
+    </div>
+  );
+}
