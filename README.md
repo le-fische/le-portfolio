@@ -1,37 +1,36 @@
-# The Elegant Illusion: Portfolio Architecture
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-This repository contains the source code for a highly interactive, magic-themed personal portfolio. 
+## Getting Started
 
-## 🎩 The Concept
-A minimalist, premium engineering portfolio framed as a deck of 54 playing cards. It is designed to act as a clean showcase for serious recruiters, while hiding a massive layer of technical easter eggs and minigames for the curious.
+First, run the development server:
 
-## 🛠️ Tech Stack & Optimization
-*   **Framework:** Next.js (App Router) using `template.tsx` for layout-shift-free transitions.
-*   **Interactive Animations:** Framer Motion (utilizing `layoutId` for seamless card expansion).
-*   **Scroll Narratives:** GSAP (GreenSock) & ScrollTrigger.
-*   **Global State:** Zustand (Managing persistent minigame scores and UI state).
-*   **Styling:** Tailwind CSS.
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-## 🎴 The Architecture
-The portfolio is constrained strictly to 54 interactive elements:
-*   **4 Aces (Categories):** Act as the main navigation (Software, Hardware, Mechanical, 3D).
-*   **52 Suit Cards (Projects):** Hovering triggers a 3D flip; clicking expands the card into a full-screen project case study.
-*   **The Black Joker (About Me):** Triggers an embossed Magician's License reveal.
-*   **The Red Joker (Playground):** A chaotic particle reveal for experimental projects.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 🔐 The Prestige (Easter Eggs)
-The site is built with three distinct layers of hidden technical flexes:
-1.  **The Joker Eclipse:** Dragging the Jokers together triggers a beautifully animated site crash and dark-mode inversion.
-2.  **The Magic Arcade:** A hidden 3D Tuck Box contains three isolated, lazy-loaded minigames:
-    *   *Illusionist's Minesweeper* (React 2D Array State Flex)
-    *   *Cardshark's Blackjack* (AI Opponent & Persistent Database Flex)
-    *   *Grandmaster's Chess* (Algorithmic Flex)
-3.  **The Riddler's Safe:** Solving CS/Math riddles unlocks a global state "White Rabbit" companion that follows the user.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-## 🚀 Development Roadmap
-Development is strictly phased to ensure maximum performance and zero animation conflicts:
-1.  **Phase 1:** Global State (Zustand) & Routing Engine.
-2.  **Phase 2:** Core Deck UI & Framer Motion expansions.
-3.  **Phase 3:** GSAP Scroll Narrative (Arthur C. Clarke quote).
-4.  **Phase 4:** Lazy-loaded Arcade Minigames.
-5.  **Phase 5:** Easter Eggs & Polish.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
