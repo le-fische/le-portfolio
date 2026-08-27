@@ -12,6 +12,9 @@ interface PortfolioState {
   activeCardId: string | null;
   setActiveCardId: (id: string | null) => void;
 
+  activeProjectId: string | null;
+  setActiveProjectId: (id: string | null) => void;
+
   // Easter Eggs
   rabbitUnlocked: boolean;
   unlockRabbit: () => void;
@@ -34,6 +37,9 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
   
   activeCardId: null,
   setActiveCardId: (id) => set({ activeCardId: id }),
+
+  activeProjectId: null,
+  setActiveProjectId: (id) => set({ activeProjectId: id }),
 
   rabbitUnlocked: false,
   unlockRabbit: () => set({ rabbitUnlocked: true }),

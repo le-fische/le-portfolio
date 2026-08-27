@@ -11,9 +11,14 @@ interface PlayingCardProps {
   isBurned?: boolean;
   className?: string;
   onClick?: () => void;
+  drag?: boolean | "x" | "y";
+  onDragEnd?: (event: MouseEvent | TouchEvent | PointerEvent, info: import("framer-motion").PanInfo) => void;
+  dragSnapToOrigin?: boolean;
+  isMarked?: boolean;
+  onMarkClick?: (e: React.MouseEvent) => void;
 }
 
-export function PlayingCard({ id, suit, value, title, isFaceDown = false, isBurned = false, className = "", onClick }: PlayingCardProps) {
+export function PlayingCard({ id, suit, value, title, isFaceDown = false, isBurned = false, className = "", onClick, drag, onDragEnd, dragSnapToOrigin, isMarked, onMarkClick }: PlayingCardProps) {
   const isRed = suit === "♦" || suit === "♥";
   
   return (
@@ -26,6 +31,10 @@ export function PlayingCard({ id, suit, value, title, isFaceDown = false, isBurn
       `}
       whileHover={{ y: -10, scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
+      drag={drag}
+      onDragEnd={onDragEnd}
+      dragSnapToOrigin={dragSnapToOrigin}
+      dragElastic={0.5}
     >
       {/* Burn mark overlays */}
       {isBurned && (
@@ -33,6 +42,17 @@ export function PlayingCard({ id, suit, value, title, isFaceDown = false, isBurn
           <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-black/40 to-transparent rounded-tr-xl mix-blend-multiply" />
           <div className="absolute bottom-0 left-0 w-20 h-20 bg-gradient-to-tr from-black/60 to-transparent rounded-bl-xl mix-blend-multiply" />
         </>
+      )}
+
+      {/* The Marked Card Easter Egg */}
+      {isMarked && (
+        <div 
+          className="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full bg-gray-300 opacity-50 cursor-crosshair z-20 hover:opacity-100 transition-opacity"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onMarkClick) onMarkClick(e);
+          }}
+        />
       )}
       {isFaceDown ? (
         <div className="absolute inset-0 bg-[url('/card-back-pattern.png')] bg-cover bg-center border-4 border-white opacity-80" />
