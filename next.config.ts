@@ -1,11 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export",
-  basePath: "/le-portfolio",
-  images: {
-    unoptimized: true,
-  },
+  // Vercel handles deployments automatically without static export
 };
 
 export default nextConfig;
