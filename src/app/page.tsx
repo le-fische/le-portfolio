@@ -8,7 +8,12 @@ import { WhiteRabbit } from "@/components/WhiteRabbit";
 import { usePortfolioStore } from "@/store";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const ACES = [
   { id: "ace-spades", suit: "♠" as const, value: "A", title: "Mechanical", isMarked: true },
@@ -54,35 +59,71 @@ export default function Home() {
     }
   };
 
+  const deckRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    const cards = gsap.utils.toArray<HTMLElement>(".scatter-card");
+    
+    // Start all cards stacked in the center
+    gsap.set(cards, { 
+      x: () => window.innerWidth / 2 - 100, // Roughly center of screen
+      y: 300, 
+      rotation: () => Math.random() * 360,
+      scale: 0.5,
+      opacity: 0 
+    });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: deckRef.current,
+        start: "top center",
+        end: "+=100%",
+        scrub: 1,
+      }
+    });
+
+    // Animate them out to their natural grid positions
+    tl.to(cards, {
+      x: 0,
+      y: 0,
+      rotation: 0,
+      scale: 1,
+      opacity: 1,
+      stagger: 0.05,
+      ease: "back.out(1.7)",
+    });
+  }, { scope: deckRef });
+
   return (
     <main className={`min-h-screen transition-colors duration-1000 ${isJokerEclipse ? "bg-black text-ivory invert" : "bg-ivory"}`}>
       {/* Scroll-locked Hero */}
       <HeroSequence />
 
-      {/* The 4 Aces Selection (Main Portfolio Grid) */}
-      <section className="min-h-screen flex flex-col items-center justify-center py-20 relative z-10">
-        <h2 className="font-serif text-3xl mb-16">Pick Your Discipline</h2>
+      {/* Main Content: The Aces & Jokers */}
+      <section ref={deckRef} className="relative z-10 py-32 flex flex-col items-center">
+        <h2 className="font-serif text-3xl mb-16 text-charcoal">Select Your Discipline</h2>
         
-        <div className="flex flex-wrap justify-center gap-8 px-4 max-w-5xl">
+        <div className="flex flex-wrap justify-center gap-8 px-4 max-w-7xl">
           {ACES.map((ace) => (
-            <PlayingCard
-              key={ace.id}
-              id={ace.id}
-              suit={ace.suit}
-              value={ace.value}
-              title={ace.title}
-              isBurned={burnedCategories.includes(ace.id as "ace-spades" | "ace-clubs" | "ace-diamonds" | "ace-hearts")}
-              isMarked={ace.isMarked}
-              onMarkClick={() => setIsSafeOpen(true)}
-              onClick={() => handleCardClick(ace.id)}
-            />
+            <div key={ace.id} className="scatter-card">
+              <PlayingCard
+                id={ace.id}
+                suit={ace.suit}
+                value={ace.value}
+                title={ace.title}
+                isBurned={burnedCategories.includes(ace.id as "ace-spades" | "ace-clubs" | "ace-diamonds" | "ace-hearts")}
+                isMarked={ace.isMarked}
+                onMarkClick={() => setIsSafeOpen(true)}
+                onClick={() => handleCardClick(ace.id)}
+              />
+            </div>
           ))}
         </div>
 
         {/* The Jokers */}
-        <h2 className="font-serif text-3xl mt-24 mb-16">The Magician</h2>
+        <h2 className="font-serif text-3xl mt-24 mb-16 text-charcoal">The Magician</h2>
         <div className="flex flex-wrap justify-center gap-16 px-4 max-w-5xl">
-            <div id="card-black-joker">
+            <div id="card-black-joker" className="scatter-card">
               <PlayingCard
                 id="black-joker"
                 suit="♠"
@@ -93,7 +134,7 @@ export default function Home() {
               />
             </div>
             
-            <div className="z-10">
+            <div className="z-10 scatter-card">
               <PlayingCard
                 id="red-joker"
                 suit="♥"
