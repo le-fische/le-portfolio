@@ -81,12 +81,12 @@ export function PlayingCard({ id, suit, value, title, isFaceDown = false, isBurn
             <div className="absolute inset-8 border border-zinc-300 rounded-md flex flex-col items-center justify-center bg-zinc-100/50 overflow-hidden">
                {/* Top half */}
                <div className={`w-full h-1/2 flex flex-col items-center justify-end pb-4 border-b border-zinc-200 ${isRed ? "text-red-700" : "text-zinc-900"}`}>
-                 <div className="text-5xl mb-2">{isRed ? "🎭" : "👁️"}</div>
+                 <div className={`text-5xl mb-2 ${!isRed ? "grayscale contrast-200 brightness-50" : ""}`}>🎭</div>
                  <div className="font-serif font-bold text-lg uppercase tracking-widest">{title}</div>
                </div>
                {/* Bottom half (Mirrored) */}
                <div className={`w-full h-1/2 flex flex-col items-center justify-end pb-4 rotate-180 ${isRed ? "text-red-700" : "text-zinc-900"}`}>
-                 <div className="text-5xl mb-2">{isRed ? "🎭" : "👁️"}</div>
+                 <div className={`text-5xl mb-2 ${!isRed ? "grayscale contrast-200 brightness-50" : ""}`}>🎭</div>
                  <div className="font-serif font-bold text-lg uppercase tracking-widest">{title}</div>
                </div>
             </div>

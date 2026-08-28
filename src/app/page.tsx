@@ -196,7 +196,7 @@ export default function Home() {
                 id="black-joker"
                 suit="♠"
                 value="J"
-                title="About Me"
+                title="ETC"
                 className="border-black shadow-2xl"
                 onClick={() => setActiveCardId("black-joker")}
               />
@@ -211,7 +211,7 @@ export default function Home() {
                 id="red-joker"
                 suit="♥"
                 value="J"
-                title="Playground"
+                title="About Me"
                 className="border-red-700 shadow-2xl"
                 onClick={() => setActiveCardId("red-joker")}
                 drag
@@ -240,7 +240,7 @@ export default function Home() {
             >
               {activeCardId.startsWith("ace-") ? (
                 <CategoryView categoryId={activeCardId} onClose={handleClose} />
-              ) : activeCardId === "red-joker" ? (
+              ) : activeCardId === "black-joker" ? (
                 <ArcadeModal onClose={() => setActiveCardId(null)} />
               ) : (
                 <div className="flex-grow flex flex-col items-center justify-center p-12 text-center">
