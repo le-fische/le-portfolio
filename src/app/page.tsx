@@ -63,40 +63,49 @@ export default function Home() {
   useGSAP(() => {
     const cards = gsap.utils.toArray<HTMLElement>(".scatter-card");
     
-    // Start all cards stacked exactly in the center, deep in z-space
+    // Start all cards stacked exactly in the center, perfectly hidden inside the box
     gsap.set(cards, { 
+      top: "50%",
+      left: "50%",
+      xPercent: -50,
+      yPercent: -50,
       x: 0,
       y: 0, 
-      z: -1000,
-      rotationX: () => (Math.random() - 0.5) * 180,
-      rotationY: () => (Math.random() - 0.5) * 180,
-      rotationZ: () => Math.random() * 360,
-      scale: 0.2,
-      opacity: 0 
+      z: 0,
+      rotationX: 0,
+      rotationY: 0,
+      rotationZ: 0,
+      scale: 0.65, // Fit snugly inside the 3D box
+      opacity: 1 // Don't fade them, let the box obscure them physically!
     });
 
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: deckRef.current,
+        trigger: "#tuckbox-container",
         start: "top center",
         end: "+=150%", // Longer scrub for smoother fly-out
         scrub: 1,
       }
     });
 
-    // Animate them out to their hardcoded target positions, flying forward
+    // 1. Shoot up out of the box
     tl.to(cards, {
+      y: -250, // Slide straight up out of the top of the box
+      scale: 0.8,
+      duration: 0.4,
+      stagger: 0.05,
+      ease: "power2.out",
+    }, 1.0)
+    // 2. Fan out to their target positions
+    .to(cards, {
       x: (_, target) => parseFloat(target.dataset.targetX || "0"),
       y: (_, target) => parseFloat(target.dataset.targetY || "0"),
-      z: 0,
-      rotationX: 0,
-      rotationY: 0,
-      rotationZ: 0,
+      rotationZ: () => (Math.random() - 0.5) * 15, // Slight random tilt for realism
       scale: 1,
-      opacity: 1,
-      stagger: 0.05,
-      ease: "expo.out",
-    });
+      duration: 0.6,
+      stagger: 0.02,
+      ease: "power3.inOut",
+    }, 1.4);
   }, { scope: deckRef });
 
   return (

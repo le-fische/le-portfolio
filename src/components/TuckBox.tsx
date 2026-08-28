@@ -26,7 +26,8 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
 
     // Initial state: Box is closed, rotated to show its depth
     gsap.set(boxRef.current, { rotationX: 15, rotationY: -25 });
-    gsap.set(lidRef.current, { rotationX: -90, transformOrigin: "top" });
+    // Set lid to top back edge, folded flat over the top (rotationX: -90)
+    gsap.set(lidRef.current, { z: -30, rotationX: -90, transformOrigin: "top" });
 
     // Step 1: Rotate box to face front, open the lid
     tl.to(boxRef.current, {
@@ -36,13 +37,12 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
       ease: "power2.inOut",
     }, 0)
     .to(lidRef.current, {
-      rotationX: 0, // Opens upwards
+      rotationX: 0, // Opens backwards, folding flat against the back face
       duration: 1,
       ease: "power2.inOut",
     }, 0);
 
-    // After box opens, children (the cards) can scatter, which is handled by their own ScrollTrigger in page.tsx
-    // We just fade out the box itself so the cards are left floating
+    // After box opens, we fade out the box itself so the cards are left floating
     tl.to(boxRef.current, {
       opacity: 0,
       scale: 0.8,
@@ -53,7 +53,7 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef} className="relative w-full flex justify-center items-center z-20 min-h-[300px]">
+    <div id="tuckbox-container" ref={containerRef} className="relative w-full flex justify-center items-center z-20 min-h-[300px]">
       
       {/* The Cards (Siblings, so they don't fade out when the box fades out) */}
       <div className="absolute inset-0 flex items-center justify-center z-10">
@@ -67,7 +67,7 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
           className="relative w-52 h-72 [transform-style:preserve-3d]"
         >
           {/* Front Face */}
-          <div className="absolute inset-0 bg-[#0f0f0f] border-2 border-gold rounded-lg [transform:translateZ(30px)] flex flex-col items-center justify-center p-4 shadow-2xl [backface-visibility:hidden]">
+          <div className="absolute inset-0 bg-[#111] border-2 border-gold rounded-lg [transform:translateZ(30px)] flex flex-col items-center justify-center p-4 shadow-2xl">
             <h3 className="font-serif text-gold text-2xl uppercase tracking-widest text-center border-b border-gold pb-2 mb-2 w-full">Vance</h3>
             <p className="text-zinc-500 font-sans text-xs tracking-[0.3em] uppercase text-center">Playing Cards</p>
             <div className="flex-grow flex items-center justify-center">
@@ -77,24 +77,26 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* Back Face */}
-          <div className="absolute inset-0 bg-[#0a0a0a] border border-zinc-800 rounded-lg [transform:translateZ(-30px)__rotateY(180deg)] [backface-visibility:hidden]" />
+          <div className="absolute inset-0 bg-[#0a0a0a] border border-zinc-800 rounded-lg [transform:translateZ(-30px)_rotateY(180deg)]" />
 
           {/* Left Face */}
-          <div className="absolute top-0 left-0 w-[60px] h-full bg-[#141414] border border-zinc-800 [transform:rotateY(-90deg)_translateZ(30px)] origin-left" />
+          <div className="absolute left-0 top-0 h-full w-[60px] bg-[#141414] border border-zinc-800 origin-left [transform:translateZ(30px)_rotateY(-90deg)]" />
 
           {/* Right Face */}
-          <div className="absolute top-0 right-0 w-[60px] h-full bg-[#141414] border border-zinc-800 [transform:rotateY(90deg)_translateZ(30px)] origin-right" />
+          <div className="absolute right-0 top-0 h-full w-[60px] bg-[#141414] border border-zinc-800 origin-right [transform:translateZ(30px)_rotateY(90deg)]" />
 
           {/* Bottom Face */}
-          <div className="absolute bottom-0 left-0 w-full h-[60px] bg-[#0a0a0a] border border-zinc-800 [transform:rotateX(-90deg)_translateZ(30px)] origin-bottom" />
+          <div className="absolute bottom-0 left-0 w-full h-[60px] bg-[#0a0a0a] border border-zinc-800 origin-bottom [transform:translateZ(30px)_rotateX(90deg)]" />
 
           {/* Top Face (The Lid) */}
           <div 
             ref={lidRef}
-            className="absolute top-0 left-0 w-full h-[60px] bg-[#1a1a1a] border-2 border-gold [transform:rotateX(90deg)_translateZ(30px)] origin-top flex items-center justify-center"
+            className="absolute top-0 left-0 w-full h-[60px] bg-[#1a1a1a] border-2 border-gold flex items-center justify-center"
           >
             {/* A small seal on the lid */}
-            <div className="w-8 h-4 bg-red-800 border border-red-900 absolute -bottom-2 z-10 rounded-sm" />
+            <div className="w-12 h-6 bg-red-800 border-2 border-red-900 absolute -bottom-3 z-10 rounded-sm flex items-center justify-center shadow-lg">
+              <span className="text-[8px] text-red-300 font-serif">V</span>
+            </div>
           </div>
         </div>
       </div>

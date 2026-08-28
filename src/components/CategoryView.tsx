@@ -30,6 +30,7 @@ export function CategoryView({ categoryId, onClose }: { categoryId: string; onCl
   const { activeProjectId, setActiveProjectId } = usePortfolioStore();
   const [flippedCardId, setFlippedCardId] = useState<string | null>(null);
 
+  const scrollerRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -50,7 +51,7 @@ export function CategoryView({ categoryId, onClose }: { categoryId: string; onCl
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
-        scroller: "#category-scroller",
+        scroller: scrollerRef.current,
         start: "top top",
         end: "+=200%", // 200vh of scrolling to complete the spring
         pin: true,
@@ -80,7 +81,7 @@ export function CategoryView({ categoryId, onClose }: { categoryId: string; onCl
       }, 0); // All animate at the same time in the timeline (time 0)
     });
 
-  }, { scope: containerRef });
+  }, { scope: scrollerRef });
 
   const handleCardInteraction = (projId: string) => {
     // 1. First click: Flip it (Pick & Flip)
@@ -94,7 +95,7 @@ export function CategoryView({ categoryId, onClose }: { categoryId: string; onCl
   };
 
   return (
-    <div id="category-scroller" className="w-full h-full relative overflow-y-auto overflow-x-hidden bg-ivory">
+    <div ref={scrollerRef} id="category-scroller" className="w-full h-full relative overflow-y-auto overflow-x-hidden bg-ivory">
       {/* Sticky Header */}
       <div className="sticky top-0 left-0 right-0 p-6 md:p-8 flex justify-between items-center bg-ivory/90 backdrop-blur-md z-[60]">
         <h2 className="text-3xl md:text-4xl font-serif text-charcoal">{title}</h2>
