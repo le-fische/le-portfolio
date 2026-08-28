@@ -79,44 +79,46 @@ export default function Home() {
       opacity: 1 
     });
 
-    // Initial state: Box is closed, rotated to show its depth
-    gsap.set(".tuckbox-box", { rotationX: 15, rotationY: -25 });
-    // Lid folded flat over the top (rotationX: -90)
-    gsap.set(".tuckbox-lid", { z: -30, rotationX: -90, transformOrigin: "top" });
+    // Initial state: Box is closed, rotated to show its back and side
+    gsap.set(".tuckbox-box", { rotationX: 15, rotationY: 155 });
+    // Lid folded flat over the top (rotationX: 90 closes it forward)
+    gsap.set(".tuckbox-lid", { z: -30, rotationX: 90, transformOrigin: "top" });
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: deckRef.current,
         start: "top top",
-        end: "+=200%", // 200vh of scrolling to play the whole sequence
+        end: "+=250%", // Longer scrub for the sequence
         scrub: 1,
-        pin: true, // PIN THE ENTIRE SECTION so the box stays on screen!
+        pin: true,
       }
     });
 
-    // Step 1: Rotate box to face front, open the lid
+    // Step 1: Flip the box over to face the camera (slightly slanted for 3D effect)
     tl.to(".tuckbox-box", {
-      rotationX: 0,
-      rotationY: 0,
-      duration: 1,
-      ease: "power2.inOut",
-    }, 0)
-    .to(".tuckbox-lid", {
-      rotationX: 0, // Opens backwards, folding flat against the back face
+      rotationX: 10,
+      rotationY: -15,
       duration: 1,
       ease: "power2.inOut",
     }, 0);
+    
+    // Step 2: Open the flap
+    tl.to(".tuckbox-lid", {
+      rotationX: 0, // Opens backwards, hanging flat down the back
+      duration: 0.6,
+      ease: "power2.inOut",
+    }, 1.0);
 
-    // Step 2: Shoot up out of the box
+    // Step 3: Shoot cards up out of the box
     tl.to(cards, {
       y: -260, 
       scale: 0.8,
       duration: 0.4,
       stagger: 0.05,
       ease: "power2.out",
-    }, 1.0)
+    }, 1.6)
     
-    // Step 3: Fan out to their target positions
+    // Step 4: Fan out to grid positions
     .to(cards, {
       x: (_, target) => parseFloat(target.dataset.targetX || "0"),
       y: (_, target) => parseFloat(target.dataset.targetY || "0"),
@@ -125,7 +127,7 @@ export default function Home() {
       duration: 0.6,
       stagger: 0.02,
       ease: "power3.inOut",
-    }, 1.4);
+    }, 2.0);
   }, { scope: deckRef });
 
   return (
