@@ -63,7 +63,7 @@ export default function Home() {
   useGSAP(() => {
     const cards = gsap.utils.toArray<HTMLElement>(".scatter-card");
     
-    // Initial state: Cards perfectly hidden inside the box (facing camera, not tilted)
+    // Initial state: Cards perfectly hidden inside the box (facing away, showing their Prinstream backs!)
     gsap.set(cards, { 
       top: "50%",
       left: "50%",
@@ -73,7 +73,7 @@ export default function Home() {
       y: 0, 
       z: 0,
       rotationX: 0,  
-      rotationY: 0, 
+      rotationY: -180, // Flipped to show backs!
       rotationZ: 0,
       scale: 0.65, 
       opacity: 0 // Start hidden so they don't peek out during box rotation!
@@ -136,10 +136,11 @@ export default function Home() {
       ease: "power2.out",
     }, 2.3);
 
-    // Step 4: Fan out to target positions! (No barrel roll needed, they already face the camera)
+    // Step 4: Fan out to target positions! (Barrel roll to reveal the fronts!)
     tl.to(cards, {
       x: (_, target) => parseFloat(target.dataset.targetX || "0"),
       y: (_, target) => parseFloat(target.dataset.targetY || "0"),
+      rotationY: 0, // Spin back around to reveal the faces!
       rotationZ: () => (Math.random() - 0.5) * 15,
       scale: 1,
       duration: 0.6,

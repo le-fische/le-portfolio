@@ -64,8 +64,8 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
           <div 
             className="tuckbox-lid absolute top-0 left-0 w-full h-[60px] bg-[#1a1a1a] border-2 border-gold flex justify-center [transform-style:preserve-3d]"
           >
-            {/* The tuck tab (rounded semicircle folded at -90 deg INTO the box) */}
-            <div className="absolute top-[58px] w-[60%] h-[25px] bg-[#1a1a1a] border-2 border-t-0 border-gold rounded-b-3xl origin-top [transform:rotateX(-90deg)_translateZ(-1px)]" />
+            {/* The tuck tab (rounded semicircle folded at 90 deg INTO the box) */}
+            <div className="absolute top-[58px] w-[60%] h-[25px] bg-[#1a1a1a] border-2 border-t-0 border-gold rounded-b-3xl origin-top [transform:rotateX(90deg)_translateZ(-1px)]" />
             
             {/* Top half of the seal (Sticker folded at 90 deg OUTSIDE the box to bridge the seam, tears away!) */}
             <div className="absolute top-[60px] w-12 h-4 origin-top [transform:rotateX(90deg)_translateZ(1px)] [transform-style:preserve-3d]">
