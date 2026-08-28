@@ -116,34 +116,33 @@ export default function Home() {
       duration: 0.1,
     }, 1.5);
 
-    // Step 3: Shoot cards up out of the box!
-    // As they fly up, they perform a beautiful 165-degree barrel roll to face the camera!
+    // Step 3: Shoot cards up out of the box! (Clean vertical exit, perfectly aligned to box)
     tl.to(cards, {
-      y: -260, 
-      rotationY: 0, // Spin back to face the camera!
-      rotationX: 0, // Flatten out!
+      y: -280, // High enough to completely clear the box before spinning
       scale: 0.8,
       duration: 0.4,
       stagger: 0.05,
       ease: "power2.out",
-    }, 1.6)
+    }, 1.6);
     
-    // Step 3.5: Discard the empty box to the bottom left (starts AFTER cards have fully ejected)
+    // Step 3.5: Discard the empty box downwards
     tl.to(".tuckbox-box", {
       x: "-35vw",
       y: "25vh",
-      rotationZ: -15, // slight spin as it drops
-      rotationY: -180, // flatten it out a bit
+      rotationZ: -15,
+      rotationY: -180,
       scale: 0.65,
       duration: 1.2,
       ease: "power2.out",
     }, 2.3);
-    
-    // Step 4: Fan out cards to grid positions
+
+    // Step 4: Barrel roll to face camera and fan out to target positions!
     tl.to(cards, {
       x: (_, target) => parseFloat(target.dataset.targetX || "0"),
       y: (_, target) => parseFloat(target.dataset.targetY || "0"),
-      rotationZ: () => (Math.random() - 0.5) * 15, 
+      rotationY: 0, 
+      rotationX: 0, 
+      rotationZ: () => (Math.random() - 0.5) * 15,
       scale: 1,
       duration: 0.6,
       stagger: 0.02,
