@@ -11,7 +11,7 @@ import { CustomCursor } from "@/components/CustomCursor";
 import { Preloader } from "@/components/Preloader";
 
 export const metadata: Metadata = {
-  title: "Aleister Vance | Portfolio",
+  title: "Houze Guo | Portfolio",
   description: "Any sufficiently advanced technology is indistinguishable from magic.",
 };
 

@@ -107,24 +107,16 @@ export default function Home() {
       ease: "power2.inOut",
     }, 0);
 
-    // Step 2: Fade out box
-    tl.to(".tuckbox-box", {
-      opacity: 0,
-      scale: 0.8,
-      duration: 0.5,
-      ease: "power2.in",
-    }, 1.0);
-
-    // Step 3: Shoot up out of the box (starting exactly as the box fades)
+    // Step 2: Shoot up out of the box
     tl.to(cards, {
-      y: -250, 
+      y: -260, 
       scale: 0.8,
       duration: 0.4,
       stagger: 0.05,
       ease: "power2.out",
     }, 1.0)
     
-    // Step 4: Fan out to their target positions
+    // Step 3: Fan out to their target positions
     .to(cards, {
       x: (_, target) => parseFloat(target.dataset.targetX || "0"),
       y: (_, target) => parseFloat(target.dataset.targetY || "0"),
@@ -142,15 +134,15 @@ export default function Home() {
       <HeroSequence />
 
       {/* Main Content: The Aces & Jokers */}
-      <section ref={deckRef} className="relative z-10 py-32 flex flex-col items-center min-h-screen">
-        <h2 className="font-serif text-3xl mb-12 text-charcoal">Select Your Discipline</h2>
+      <section ref={deckRef} className="relative z-10 py-32 flex flex-col items-center justify-center min-h-screen">
+        <h2 className="absolute top-12 md:top-24 font-serif text-3xl md:text-5xl text-charcoal z-0">Select Your Discipline</h2>
         
         <TuckBox>
           <div className="relative w-full h-full flex items-center justify-center pointer-events-none">
             {ACES.map((ace, i) => {
               // Target positions for the grid
               const targetX = (i - 1.5) * 220; // 4 cards: -330, -110, 110, 330
-              const targetY = -160;
+              const targetY = -180; // Higher so they don't get covered by the box too much
 
               return (
                 <div 
@@ -177,7 +169,7 @@ export default function Home() {
               id="card-black-joker" 
               className="scatter-card absolute pointer-events-auto"
               data-target-x={-120}
-              data-target-y={180}
+              data-target-y={200}
             >
               <PlayingCard
                 id="black-joker"
@@ -192,7 +184,7 @@ export default function Home() {
             <div 
               className="scatter-card absolute pointer-events-auto"
               data-target-x={120}
-              data-target-y={180}
+              data-target-y={200}
             >
               <PlayingCard
                 id="red-joker"
@@ -233,7 +225,7 @@ export default function Home() {
                 <div className="flex-grow flex flex-col items-center justify-center p-12 text-center">
                   <h2 className="text-5xl font-serif mb-6">About Me</h2>
                   <p className="text-xl max-w-2xl text-gray-700">
-                    I am Aleister Vance. An engineer, a developer, and a magician. Here is where the resume goes.
+                    I am Houze Guo. An engineer, a developer, and a magician. Here is where the resume goes.
                   </p>
                   <button 
                     onClick={handleClose}

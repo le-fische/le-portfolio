@@ -23,7 +23,7 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
         >
           {/* Front Face */}
           <div className="absolute inset-0 bg-[#111] border-2 border-gold rounded-lg [transform:translateZ(30px)] flex flex-col items-center justify-center p-4 shadow-2xl">
-            <h3 className="font-serif text-gold text-2xl uppercase tracking-widest text-center border-b border-gold pb-2 mb-2 w-full">Vance</h3>
+            <h3 className="font-serif text-gold text-2xl uppercase tracking-widest text-center border-b border-gold pb-2 mb-2 w-full">Houze</h3>
             <p className="text-zinc-500 font-sans text-xs tracking-[0.3em] uppercase text-center">Playing Cards</p>
             <div className="flex-grow flex items-center justify-center">
               <span className="text-5xl text-gold opacity-50">♠</span>

@@ -31,7 +31,7 @@ export function Preloader() {
     <div className="preloader-bg fixed inset-0 z-[10000] bg-zinc-950 flex items-center justify-center pointer-events-none">
       <div className="text-center absolute">
         <h1 className="preloader-text-1 opacity-0 translate-y-10 font-serif text-3xl md:text-5xl text-zinc-300 tracking-widest uppercase">
-          Aleister Vance
+          Houze Guo
         </h1>
       </div>
       <div className="text-center absolute">
