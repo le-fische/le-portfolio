@@ -45,15 +45,15 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
           <div 
             className="tuckbox-lid absolute top-0 left-0 w-full h-[60px] bg-[#1a1a1a] border-2 border-gold flex justify-center [transform-style:preserve-3d]"
           >
-            {/* Top half of the seal (flat on the main flap) */}
-            <div className="w-12 h-3 bg-red-800 border-2 border-b-0 border-red-900 absolute left-1/2 -translate-x-1/2 bottom-0 rounded-t-sm flex items-center justify-center overflow-hidden [transform:translateZ(1px)]">
-              <span className="text-[8px] text-red-300 font-serif translate-y-[2px]">V</span>
+            {/* Top half of the seal (flat on the OUTSIDE of the main flap) */}
+            <div className="w-12 h-3 bg-red-800 border-2 border-b-0 border-red-900 absolute left-1/2 -translate-x-1/2 bottom-0 rounded-t-sm flex items-center justify-center overflow-hidden [transform:translateZ(-1px)]">
+              <span className="text-[8px] text-red-300 font-serif translate-y-[2px] [transform:rotateY(180deg)]">V</span>
             </div>
 
             {/* The tuck tab (rounded semicircle folded at 90 deg into the box) */}
             <div className="absolute top-[58px] w-[60%] h-[25px] bg-[#1a1a1a] border-2 border-t-0 border-gold rounded-b-3xl origin-top [transform:rotateX(90deg)] [transform-style:preserve-3d]">
-              {/* Bottom half of the seal (folded with the tuck tab) */}
-              <div className="w-12 h-3 bg-red-800 border-2 border-t-0 border-red-900 absolute left-1/2 -translate-x-1/2 top-0 rounded-b-sm [transform:translateZ(1px)]" />
+              {/* Bottom half of the seal (folded with the tuck tab, on the OUTSIDE) */}
+              <div className="w-12 h-3 bg-red-800 border-2 border-t-0 border-red-900 absolute left-1/2 -translate-x-1/2 top-0 rounded-b-sm [transform:translateZ(-1px)]" />
             </div>
           </div>
         </div>

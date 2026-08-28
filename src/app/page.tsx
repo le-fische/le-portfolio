@@ -63,7 +63,7 @@ export default function Home() {
   useGSAP(() => {
     const cards = gsap.utils.toArray<HTMLElement>(".scatter-card");
     
-    // Initial state: Cards perfectly hidden inside the box
+    // Initial state: Cards perfectly hidden inside the box, tracking its exact rotation!
     gsap.set(cards, { 
       top: "50%",
       left: "50%",
@@ -72,8 +72,8 @@ export default function Home() {
       x: 0,
       y: 0, 
       z: 0,
-      rotationX: 0,
-      rotationY: 0,
+      rotationX: 10,  // Match box tilt
+      rotationY: -15, // Match box spin
       rotationZ: 0,
       scale: 0.65, 
       opacity: 0 // Start hidden so they don't peek out during box rotation!
@@ -94,8 +94,9 @@ export default function Home() {
       }
     });
 
-    // Step 1: Flip the box over to face the BACK
-    tl.to(".tuckbox-box", {
+    // Step 1: Flip BOTH the box and the cards over to face the BACK! 
+    // Since they rotate perfectly together, they NEVER intersect in 3D space!
+    tl.to([".tuckbox-box", cards], {
       rotationX: 10,
       rotationY: -165,
       duration: 1,
@@ -115,9 +116,12 @@ export default function Home() {
       duration: 0.1,
     }, 1.5);
 
-    // Step 3: Shoot cards up out of the box
+    // Step 3: Shoot cards up out of the box!
+    // As they fly up, they perform a beautiful 165-degree barrel roll to face the camera!
     tl.to(cards, {
       y: -260, 
+      rotationY: 0, // Spin back to face the camera!
+      rotationX: 0, // Flatten out!
       scale: 0.8,
       duration: 0.4,
       stagger: 0.05,
