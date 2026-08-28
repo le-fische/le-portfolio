@@ -48,7 +48,7 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
             className="tuckbox-lid absolute top-0 left-0 w-full h-[60px] bg-[#1a1a1a] border-2 border-gold flex items-center justify-center"
           >
             {/* A small seal on the lid */}
-            <div className="w-12 h-6 bg-red-800 border-2 border-red-900 absolute left-1/2 -translate-x-1/2 -bottom-6 z-10 rounded-sm flex items-center justify-center shadow-lg origin-top [transform:rotateX(-90deg)]">
+            <div className="w-12 h-6 bg-red-800 border-2 border-red-900 absolute left-1/2 -translate-x-1/2 -bottom-3 z-10 rounded-sm flex items-center justify-center shadow-lg">
               <span className="text-[8px] text-red-300 font-serif">V</span>
             </div>
           </div>

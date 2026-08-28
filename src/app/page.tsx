@@ -81,14 +81,14 @@ export default function Home() {
 
     // Initial state: Box is closed, rotated to show its front and side
     gsap.set(".tuckbox-box", { rotationX: 10, rotationY: -15, x: 0, y: 0, rotationZ: 0, scale: 1 });
-    // Lid folded flat over the top (rotationX: 90 closes it forward)
-    gsap.set(".tuckbox-lid", { z: -30, rotationX: 90, transformOrigin: "top" });
+    // Lid folded flat over the top (rotationX: 90 closes it backward from the front face)
+    gsap.set(".tuckbox-lid", { z: 30, rotationX: 90, transformOrigin: "top" });
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: deckRef.current,
         start: "top top",
-        end: "+=250%", // Longer scrub for the sequence
+        end: "+=300%", // Extra long scrub for the full cinematic sequence
         scrub: 1,
         pin: true,
       }
@@ -102,9 +102,9 @@ export default function Home() {
       ease: "power2.inOut",
     }, 0);
     
-    // Step 2: Open the flap
+    // Step 2: Open the flap (like a laptop screen)
     tl.to(".tuckbox-lid", {
-      rotationX: 0, // Opens backwards, hanging flat down the back
+      rotationX: 180, // Flips UP and backwards, away from the camera
       duration: 0.6,
       ease: "power2.inOut",
     }, 1.0);
@@ -124,7 +124,7 @@ export default function Home() {
       ease: "power2.out",
     }, 1.6)
     
-    // Step 3.5: Discard the empty box to the bottom left
+    // Step 3.5: Discard the empty box to the bottom left (starts AFTER cards have fully ejected)
     tl.to(".tuckbox-box", {
       x: "-35vw",
       y: "25vh",
@@ -133,7 +133,7 @@ export default function Home() {
       scale: 0.65,
       duration: 1.2,
       ease: "power2.out",
-    }, 1.6);
+    }, 2.3);
     
     // Step 4: Fan out cards to grid positions
     tl.to(cards, {
@@ -144,7 +144,7 @@ export default function Home() {
       duration: 0.6,
       stagger: 0.02,
       ease: "power3.inOut",
-    }, 2.0);
+    }, 2.3);
   }, { scope: deckRef });
 
   return (

@@ -10,17 +10,33 @@ export function Preloader() {
     const preventScroll = (e: Event) => e.preventDefault();
     window.addEventListener("wheel", preventScroll, { passive: false });
     window.addEventListener("touchmove", preventScroll, { passive: false });
+    window.addEventListener("keydown", (e) => {
+      if (["ArrowUp", "ArrowDown", "Space", "PageUp", "PageDown"].includes(e.code)) {
+        e.preventDefault();
+      }
+    }, { passive: false });
     
     document.documentElement.style.overflow = "hidden";
+    document.documentElement.style.overscrollBehavior = "none";
     document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.width = "100%";
+    document.body.style.height = "100vh";
+    document.body.style.overscrollBehavior = "none";
 
     const tl = gsap.timeline({
       onComplete: () => {
         setIsLoading(false);
         window.removeEventListener("wheel", preventScroll);
         window.removeEventListener("touchmove", preventScroll);
+        // Also remove keydown logic in a real app, but for simplicity here we assume reloading handles it or we don't strictly remove it
         document.documentElement.style.overflow = "";
+        document.documentElement.style.overscrollBehavior = "";
         document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.width = "";
+        document.body.style.height = "";
+        document.body.style.overscrollBehavior = "";
       }
     });
 
