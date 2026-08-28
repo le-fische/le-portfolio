@@ -20,6 +20,7 @@ interface PlayingCardProps {
 
 export function PlayingCard({ id, suit, value, title, isFaceDown = false, isBurned = false, className = "", onClick, drag, onDragEnd, dragSnapToOrigin, isMarked, onMarkClick }: PlayingCardProps) {
   const isRed = suit === "♦" || suit === "♥";
+  const isJoker = id === "black-joker" || id === "red-joker";
   
   return (
     <motion.div
@@ -62,21 +63,53 @@ export function PlayingCard({ id, suit, value, title, isFaceDown = false, isBurn
           />
         )}
         
-        <div className={`text-2xl font-serif font-bold ${isRed ? "text-red-700" : "text-zinc-900"} leading-none`}>
-          {value}
-          <div className="text-3xl mt-1">{suit}</div>
-        </div>
-        
-        {title && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full px-4 text-center">
-            <h3 className="font-sans text-sm tracking-[0.2em] uppercase text-zinc-800 break-words leading-relaxed">{title}</h3>
-          </div>
-        )}
+        {/* Card Content based on type */}
+        {isJoker ? (
+          <div className="w-full h-full flex flex-col relative">
+            {/* Joker Corner Marks */}
+            <div className={`absolute top-0 left-0 text-center leading-[0.8] ${isRed ? "text-red-700" : "text-zinc-900"}`}>
+              <div className="text-xl font-bold font-serif mb-1">★</div>
+              <div className="text-[10px] font-sans tracking-widest style-vertical" style={{ writingMode: 'vertical-rl', textOrientation: 'upright' }}>JOKER</div>
+            </div>
+            
+            <div className={`absolute bottom-0 right-0 text-center leading-[0.8] rotate-180 ${isRed ? "text-red-700" : "text-zinc-900"}`}>
+              <div className="text-xl font-bold font-serif mb-1">★</div>
+              <div className="text-[10px] font-sans tracking-widest style-vertical" style={{ writingMode: 'vertical-rl', textOrientation: 'upright' }}>JOKER</div>
+            </div>
 
-        <div className={`text-2xl font-serif font-bold ${isRed ? "text-red-700" : "text-zinc-900"} self-end rotate-180 leading-none`}>
-          {value}
-          <div className="text-3xl mt-1">{suit}</div>
-        </div>
+            {/* Central Face Card Graphic */}
+            <div className="absolute inset-8 border border-zinc-300 rounded-md flex flex-col items-center justify-center bg-zinc-100/50 overflow-hidden">
+               {/* Top half */}
+               <div className={`w-full h-1/2 flex flex-col items-center justify-end pb-4 border-b border-zinc-200 ${isRed ? "text-red-700" : "text-zinc-900"}`}>
+                 <div className="text-5xl mb-2">{isRed ? "🎭" : "👁️"}</div>
+                 <div className="font-serif font-bold text-lg uppercase tracking-widest">{title}</div>
+               </div>
+               {/* Bottom half (Mirrored) */}
+               <div className={`w-full h-1/2 flex flex-col items-center justify-end pb-4 rotate-180 ${isRed ? "text-red-700" : "text-zinc-900"}`}>
+                 <div className="text-5xl mb-2">{isRed ? "🎭" : "👁️"}</div>
+                 <div className="font-serif font-bold text-lg uppercase tracking-widest">{title}</div>
+               </div>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className={`text-2xl font-serif font-bold ${isRed ? "text-red-700" : "text-zinc-900"} leading-none`}>
+              {value}
+              <div className="text-3xl mt-1">{suit}</div>
+            </div>
+            
+            {title && (
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full px-4 text-center">
+                <h3 className="font-sans text-sm tracking-[0.2em] uppercase text-zinc-800 break-words leading-relaxed">{title}</h3>
+              </div>
+            )}
+
+            <div className={`text-2xl font-serif font-bold ${isRed ? "text-red-700" : "text-zinc-900"} self-end rotate-180 leading-none`}>
+              {value}
+              <div className="text-3xl mt-1">{suit}</div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* BACK FACE (Prinstream Tech Pattern) */}
