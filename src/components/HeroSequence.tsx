@@ -11,15 +11,18 @@ gsap.registerPlugin(ScrollTrigger);
 export function HeroSequence() {
   const containerRef = useRef<HTMLDivElement>(null);
   const quoteRef = useRef<HTMLHeadingElement>(null);
+  const authorRef = useRef<HTMLParagraphElement>(null);
 
   useGSAP(() => {
-    if (!quoteRef.current) return;
+    if (!quoteRef.current || !authorRef.current) return;
 
     // Split text into words and chars
-    const split = new SplitType(quoteRef.current, { types: 'lines,words,chars' });
+    const splitQuote = new SplitType(quoteRef.current, { types: 'lines,words,chars' });
+    const splitAuthor = new SplitType(authorRef.current, { types: 'chars' });
     
     // Initial state
-    gsap.set(split.chars, { y: 100, opacity: 0, rotationX: -90 });
+    gsap.set(splitQuote.chars, { y: 100, opacity: 0, rotationX: -90 });
+    // Author starts hidden (handled by css animate-fade-in initially, but GSAP controls the scatter)
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -32,7 +35,7 @@ export function HeroSequence() {
     });
 
     // 1. Dramatic Intro Reveal (Not scrubbed, happens on load)
-    gsap.to(split.chars, {
+    gsap.to(splitQuote.chars, {
       y: 0,
       opacity: 1,
       rotationX: 0,
@@ -43,7 +46,9 @@ export function HeroSequence() {
     });
 
     // 2. Scrubbed Scatter Animation on Scroll
-    tl.to(split.chars, {
+    const allChars = [...(splitQuote.chars || []), ...(splitAuthor.chars || [])];
+    
+    tl.to(allChars, {
       y: () => (Math.random() - 0.5) * 1000,
       x: () => (Math.random() - 0.5) * 1000,
       rotation: () => (Math.random() - 0.5) * 720,
@@ -51,9 +56,12 @@ export function HeroSequence() {
       opacity: 0,
       stagger: 0.01,
       ease: "power2.inOut",
-    });
+    }, 0);
 
-    return () => split.revert();
+    return () => {
+      splitQuote.revert();
+      splitAuthor.revert();
+    };
   }, { scope: containerRef });
 
   return (
@@ -62,7 +70,7 @@ export function HeroSequence() {
         <h1 ref={quoteRef} className="font-serif text-5xl md:text-6xl lg:text-7xl text-charcoal leading-tight [perspective:1000px]">
           &quot;Any sufficiently advanced technology is indistinguishable from magic.&quot;
         </h1>
-        <p className="mt-12 text-sm font-sans text-gray-500 uppercase tracking-[0.5em] opacity-0 animate-fade-in">
+        <p ref={authorRef} className="mt-12 text-sm font-sans text-gray-500 uppercase tracking-[0.5em] opacity-0 animate-fade-in">
           Arthur C. Clarke
         </p>
       </div>

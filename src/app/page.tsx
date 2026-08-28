@@ -76,7 +76,7 @@ export default function Home() {
       rotationY: 0,
       rotationZ: 0,
       scale: 0.65, 
-      opacity: 1 
+      opacity: 0 // Start hidden so they don't peek out during box rotation!
     });
 
     // Initial state: Box is closed, rotated to show its front and side
@@ -108,6 +108,12 @@ export default function Home() {
       duration: 0.6,
       ease: "power2.inOut",
     }, 1.0);
+
+    // Step 2.5: Make cards visible right before they shoot up
+    tl.to(cards, {
+      opacity: 1,
+      duration: 0.1,
+    }, 1.5);
 
     // Step 3: Shoot cards up out of the box
     tl.to(cards, {

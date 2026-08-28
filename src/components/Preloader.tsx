@@ -7,13 +7,18 @@ export function Preloader() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Prevent scrolling while loading
+    const preventScroll = (e: Event) => e.preventDefault();
+    window.addEventListener("wheel", preventScroll, { passive: false });
+    window.addEventListener("touchmove", preventScroll, { passive: false });
+    
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
 
     const tl = gsap.timeline({
       onComplete: () => {
         setIsLoading(false);
+        window.removeEventListener("wheel", preventScroll);
+        window.removeEventListener("touchmove", preventScroll);
         document.documentElement.style.overflow = "";
         document.body.style.overflow = "";
       }
