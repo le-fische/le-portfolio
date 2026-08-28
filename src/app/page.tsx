@@ -187,24 +187,8 @@ export default function Home() {
             })}
             
             <div 
-              id="card-black-joker" 
               className="scatter-card absolute pointer-events-auto [transform-style:preserve-3d]"
               data-target-x={-120}
-              data-target-y={200}
-            >
-              <PlayingCard
-                id="black-joker"
-                suit="♠"
-                value="J"
-                title="ETC"
-                className="border-black shadow-2xl"
-                onClick={() => setActiveCardId("black-joker")}
-              />
-            </div>
-            
-            <div 
-              className="scatter-card absolute pointer-events-auto [transform-style:preserve-3d]"
-              data-target-x={120}
               data-target-y={200}
             >
               <PlayingCard
@@ -217,6 +201,22 @@ export default function Home() {
                 drag
                 dragSnapToOrigin
                 onDragEnd={handleJokerDragEnd}
+              />
+            </div>
+
+            <div 
+              id="card-black-joker" 
+              className="scatter-card absolute pointer-events-auto [transform-style:preserve-3d]"
+              data-target-x={120}
+              data-target-y={200}
+            >
+              <PlayingCard
+                id="black-joker"
+                suit="♠"
+                value="J"
+                title="ETC"
+                className="border-black shadow-2xl"
+                onClick={() => setActiveCardId("black-joker")}
               />
             </div>
           </div>

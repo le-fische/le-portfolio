@@ -77,17 +77,13 @@ export function PlayingCard({ id, suit, value, title, isFaceDown = false, isBurn
               <div className="text-[10px] font-sans tracking-widest style-vertical" style={{ writingMode: 'vertical-rl', textOrientation: 'upright' }}>JOKER</div>
             </div>
 
-            {/* Central Face Card Graphic */}
-            <div className="absolute inset-8 border border-zinc-300 rounded-md flex flex-col items-center justify-center bg-zinc-100/50 overflow-hidden">
-               {/* Top half */}
-               <div className={`w-full h-1/2 flex flex-col items-center justify-end pb-4 border-b border-zinc-200 ${isRed ? "text-red-700" : "text-zinc-900"}`}>
-                 <div className={`text-5xl mb-2 ${!isRed ? "grayscale contrast-200 brightness-50" : ""}`}>🎭</div>
-                 <div className="font-serif font-bold text-lg uppercase tracking-widest">{title}</div>
-               </div>
-               {/* Bottom half (Mirrored) */}
-               <div className={`w-full h-1/2 flex flex-col items-center justify-end pb-4 rotate-180 ${isRed ? "text-red-700" : "text-zinc-900"}`}>
-                 <div className={`text-5xl mb-2 ${!isRed ? "grayscale contrast-200 brightness-50" : ""}`}>🎭</div>
-                 <div className="font-serif font-bold text-lg uppercase tracking-widest">{title}</div>
+            {/* Central Graphic */}
+            <div className="absolute inset-8 border border-zinc-300 rounded-md flex flex-col items-center justify-center bg-zinc-100/50">
+               <div className={`text-6xl mb-6 ${!isRed ? "grayscale contrast-200 brightness-50" : ""}`}>🎭</div>
+               <div className={`font-serif font-bold text-xl uppercase tracking-[0.2em] text-center flex flex-col gap-1 ${isRed ? "text-red-700" : "text-zinc-900"}`}>
+                 {(title || "").split(' ').map((word, i) => (
+                    <span key={i}>{word}</span>
+                 ))}
                </div>
             </div>
           </div>
