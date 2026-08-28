@@ -18,6 +18,25 @@ interface PlayingCardProps {
   onMarkClick?: (e: React.MouseEvent) => void;
 }
 
+const JokerIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 100 100" className={className} fill="currentColor">
+    {/* Left Droop */}
+    <path d="M 38 72 C 15 70, 10 50, 18 42 C 25 35, 35 48, 38 60 Z" />
+    <circle cx="16" cy="38" r="5" />
+    
+    {/* Right Droop */}
+    <path d="M 62 72 C 85 70, 90 50, 82 42 C 75 35, 65 48, 62 60 Z" />
+    <circle cx="84" cy="38" r="5" />
+    
+    {/* Center Spike */}
+    <path d="M 35 68 C 45 50, 35 30, 50 20 C 65 30, 55 50, 65 68 C 55 72, 45 72, 35 68 Z" />
+    <circle cx="50" cy="13" r="5" />
+    
+    {/* Headband */}
+    <path d="M 32 75 C 40 82, 60 82, 68 75 L 63 85 C 55 90, 45 90, 37 85 Z" />
+  </svg>
+);
+
 export function PlayingCard({ id, suit, value, title, isFaceDown = false, isBurned = false, className = "", onClick, drag, onDragEnd, dragSnapToOrigin, isMarked, onMarkClick }: PlayingCardProps) {
   const isRed = suit === "♦" || suit === "♥";
   const isJoker = id === "black-joker" || id === "red-joker";
@@ -68,18 +87,20 @@ export function PlayingCard({ id, suit, value, title, isFaceDown = false, isBurn
           <div className="w-full h-full flex flex-col relative">
             {/* Joker Corner Marks */}
             <div className={`absolute top-0 left-0 text-center leading-[0.8] ${isRed ? "text-red-700" : "text-zinc-900"}`}>
-              <div className="text-xl font-bold font-serif mb-1">★</div>
-              <div className="text-[10px] font-sans tracking-widest style-vertical" style={{ writingMode: 'vertical-rl', textOrientation: 'upright' }}>JOKER</div>
+              <div className="text-sm font-serif font-bold tracking-widest flex flex-col gap-0.5">
+                <span>J</span><span>O</span><span>K</span><span>E</span><span>R</span>
+              </div>
             </div>
             
             <div className={`absolute bottom-0 right-0 text-center leading-[0.8] rotate-180 ${isRed ? "text-red-700" : "text-zinc-900"}`}>
-              <div className="text-xl font-bold font-serif mb-1">★</div>
-              <div className="text-[10px] font-sans tracking-widest style-vertical" style={{ writingMode: 'vertical-rl', textOrientation: 'upright' }}>JOKER</div>
+              <div className="text-sm font-serif font-bold tracking-widest flex flex-col gap-0.5">
+                <span>J</span><span>O</span><span>K</span><span>E</span><span>R</span>
+              </div>
             </div>
 
             {/* Central Graphic */}
-            <div className="absolute inset-8 border border-zinc-300 rounded-md flex flex-col items-center justify-center bg-zinc-100/50">
-               <div className={`text-6xl mb-6 ${!isRed ? "grayscale contrast-200 brightness-50" : ""}`}>🎭</div>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+               <JokerIcon className={`w-20 h-20 mb-4 ${isRed ? "text-red-700" : "text-zinc-900"}`} />
                <div className={`font-serif font-bold text-xl uppercase tracking-[0.2em] text-center flex flex-col gap-1 ${isRed ? "text-red-700" : "text-zinc-900"}`}>
                  {(title || "").split(' ').map((word, i) => (
                     <span key={i}>{word}</span>
