@@ -63,7 +63,7 @@ export default function Home() {
   useGSAP(() => {
     const cards = gsap.utils.toArray<HTMLElement>(".scatter-card");
     
-    // Initial state: Cards perfectly hidden inside the box, tracking its exact rotation!
+    // Initial state: Cards perfectly hidden inside the box (facing camera, not tilted)
     gsap.set(cards, { 
       top: "50%",
       left: "50%",
@@ -72,8 +72,8 @@ export default function Home() {
       x: 0,
       y: 0, 
       z: 0,
-      rotationX: 10,  // Match box tilt
-      rotationY: -15, // Match box spin
+      rotationX: 0,  
+      rotationY: 0, 
       rotationZ: 0,
       scale: 0.65, 
       opacity: 0 // Start hidden so they don't peek out during box rotation!
@@ -94,11 +94,10 @@ export default function Home() {
       }
     });
 
-    // Step 1: Flip BOTH the box and the cards over to face the BACK! 
-    // Since they rotate perfectly together, they NEVER intersect in 3D space!
-    tl.to([".tuckbox-box", cards], {
-      rotationX: 10,
-      rotationY: -165,
+    // Step 1: Flip the box over to face the BACK perfectly straight!
+    tl.to(".tuckbox-box", {
+      rotationX: 0, // Perfectly parallel to the screen!
+      rotationY: -180, // Dead straight from the back!
       duration: 1,
       ease: "power2.inOut",
     }, 0);
@@ -111,14 +110,15 @@ export default function Home() {
     }, 1.0);
 
     // Step 2.5: Make cards visible right before they shoot up
+    // Since box is perfectly straight (rotationX:0) and cards are straight (rotationX:0), they perfectly align!
     tl.to(cards, {
       opacity: 1,
       duration: 0.1,
     }, 1.5);
 
-    // Step 3: Shoot cards up out of the box! (Clean vertical exit, perfectly aligned to box)
+    // Step 3: Shoot cards up out of the box! (Clean vertical exit, perfectly aligned to box, facing forward)
     tl.to(cards, {
-      y: -280, // High enough to completely clear the box before spinning
+      y: -280, // High enough to completely clear the box
       scale: 0.8,
       duration: 0.4,
       stagger: 0.05,
@@ -130,18 +130,16 @@ export default function Home() {
       x: "-35vw",
       y: "25vh",
       rotationZ: -15,
-      rotationY: -180,
+      rotationY: -160,
       scale: 0.65,
       duration: 1.2,
       ease: "power2.out",
     }, 2.3);
 
-    // Step 4: Barrel roll to face camera and fan out to target positions!
+    // Step 4: Fan out to target positions! (No barrel roll needed, they already face the camera)
     tl.to(cards, {
       x: (_, target) => parseFloat(target.dataset.targetX || "0"),
       y: (_, target) => parseFloat(target.dataset.targetY || "0"),
-      rotationY: 0, 
-      rotationX: 0, 
       rotationZ: () => (Math.random() - 0.5) * 15,
       scale: 1,
       duration: 0.6,

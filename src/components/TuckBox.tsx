@@ -31,6 +31,20 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
 
           {/* Back Face */}
           <div className="absolute inset-0 bg-[#0a0a0a] border border-zinc-800 rounded-lg [transform:translateZ(-30px)_rotateY(180deg)] [transform-style:preserve-3d]">
+             {/* Prinstream-style Tech Pattern */}
+             <div className="absolute inset-0 rounded-lg overflow-hidden flex items-center justify-center opacity-40">
+               {/* Diagonal striping */}
+               <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,#222_10px,#222_11px)]" />
+               {/* X O decals */}
+               <div className="flex gap-4 font-mono text-zinc-600 text-3xl font-black tracking-widest z-0">
+                 <span>X</span>
+                 <span>O</span>
+               </div>
+               {/* Accent blocks */}
+               <div className="absolute bottom-4 left-4 w-12 h-2 bg-zinc-300" />
+               <div className="absolute top-4 right-4 w-8 h-2 bg-gold" />
+             </div>
+
              {/* Bottom half of the seal (Stays on the box when lid opens!) */}
              <div className="w-12 h-4 bg-red-800 border-2 border-t-0 border-red-900 absolute left-1/2 -translate-x-1/2 top-0 rounded-b-sm flex items-center justify-center overflow-hidden [transform:translateZ(1px)]">
                <span className="text-[10px] text-red-300 font-serif -translate-y-[2px]">V</span>
@@ -53,8 +67,8 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
             {/* Top half of the seal (flat on the OUTSIDE of the main flap, tears away!) */}
             <div className="w-12 h-3 bg-red-800 border-2 border-b-0 border-red-900 absolute left-1/2 -translate-x-1/2 bottom-0 rounded-t-sm [transform:translateZ(-1px)]" />
 
-            {/* The tuck tab (rounded semicircle folded at -90 deg INTO the box) */}
-            <div className="absolute top-[58px] w-[60%] h-[25px] bg-[#1a1a1a] border-2 border-t-0 border-gold rounded-b-3xl origin-top [transform:rotateX(-90deg)_translateZ(-1px)]" />
+            {/* The tuck tab (rounded semicircle folded at 90 deg INTO the box) */}
+            <div className="absolute top-[58px] w-[60%] h-[25px] bg-[#1a1a1a] border-2 border-t-0 border-gold rounded-b-3xl origin-top [transform:rotateX(90deg)_translateZ(-1px)]" />
           </div>
         </div>
       </div>
