@@ -28,7 +28,7 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
             <div className="flex-grow flex items-center justify-center">
               <span className="text-5xl text-gold opacity-50">♠</span>
             </div>
-            <p className="text-gold font-serif text-sm tracking-widest uppercase">Premium Quality</p>
+            <p className="text-gold font-serif text-sm tracking-widest uppercase">Made In 2007</p>
           </div>
 
           {/* Back Face */}

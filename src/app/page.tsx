@@ -79,8 +79,8 @@ export default function Home() {
       opacity: 1 
     });
 
-    // Initial state: Box is closed, rotated to show its back and side
-    gsap.set(".tuckbox-box", { rotationX: 15, rotationY: 155 });
+    // Initial state: Box is closed, rotated to show its front and side
+    gsap.set(".tuckbox-box", { rotationX: 10, rotationY: -15, x: 0, y: 0, rotationZ: 0, scale: 1 });
     // Lid folded flat over the top (rotationX: 90 closes it forward)
     gsap.set(".tuckbox-lid", { z: -30, rotationX: 90, transformOrigin: "top" });
 
@@ -94,10 +94,10 @@ export default function Home() {
       }
     });
 
-    // Step 1: Flip the box over to face the camera (slightly slanted for 3D effect)
+    // Step 1: Flip the box over to face the BACK
     tl.to(".tuckbox-box", {
       rotationX: 10,
-      rotationY: -15,
+      rotationY: -165,
       duration: 1,
       ease: "power2.inOut",
     }, 0);
@@ -118,8 +118,19 @@ export default function Home() {
       ease: "power2.out",
     }, 1.6)
     
-    // Step 4: Fan out to grid positions
-    .to(cards, {
+    // Step 3.5: Discard the empty box to the bottom left
+    tl.to(".tuckbox-box", {
+      x: "-35vw",
+      y: "25vh",
+      rotationZ: -15, // slight spin as it drops
+      rotationY: -180, // flatten it out a bit
+      scale: 0.65,
+      duration: 1.2,
+      ease: "power2.out",
+    }, 1.6);
+    
+    // Step 4: Fan out cards to grid positions
+    tl.to(cards, {
       x: (_, target) => parseFloat(target.dataset.targetX || "0"),
       y: (_, target) => parseFloat(target.dataset.targetY || "0"),
       rotationZ: () => (Math.random() - 0.5) * 15, 

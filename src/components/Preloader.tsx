@@ -8,11 +8,13 @@ export function Preloader() {
 
   useEffect(() => {
     // Prevent scrolling while loading
+    document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
 
     const tl = gsap.timeline({
       onComplete: () => {
         setIsLoading(false);
+        document.documentElement.style.overflow = "";
         document.body.style.overflow = "";
       }
     });
@@ -35,8 +37,8 @@ export function Preloader() {
         </h1>
       </div>
       <div className="text-center absolute">
-        <h1 className="preloader-text-2 opacity-0 translate-y-10 font-serif text-2xl md:text-4xl text-zinc-500 italic">
-          Are you watching closely?
+        <h1 className="preloader-text-2 opacity-0 translate-y-10 font-serif text-2xl md:text-4xl text-zinc-500 italic max-w-2xl px-4">
+          &quot;The closer you look, the less you see.&quot;
         </h1>
       </div>
     </div>
