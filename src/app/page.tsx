@@ -168,7 +168,7 @@ export default function Home() {
               return (
                 <div 
                   key={ace.id} 
-                  className="scatter-card absolute pointer-events-auto"
+                  className="scatter-card absolute pointer-events-auto [transform-style:preserve-3d]"
                   data-target-x={targetX}
                   data-target-y={targetY}
                 >
@@ -188,7 +188,7 @@ export default function Home() {
             
             <div 
               id="card-black-joker" 
-              className="scatter-card absolute pointer-events-auto"
+              className="scatter-card absolute pointer-events-auto [transform-style:preserve-3d]"
               data-target-x={-120}
               data-target-y={200}
             >
@@ -203,7 +203,7 @@ export default function Home() {
             </div>
             
             <div 
-              className="scatter-card absolute pointer-events-auto"
+              className="scatter-card absolute pointer-events-auto [transform-style:preserve-3d]"
               data-target-x={120}
               data-target-y={200}
             >
