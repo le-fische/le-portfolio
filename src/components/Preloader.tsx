@@ -29,7 +29,6 @@ export function Preloader() {
         setIsLoading(false);
         window.removeEventListener("wheel", preventScroll);
         window.removeEventListener("touchmove", preventScroll);
-        // Also remove keydown logic in a real app, but for simplicity here we assume reloading handles it or we don't strictly remove it
         document.documentElement.style.overflow = "";
         document.documentElement.style.overscrollBehavior = "";
         document.body.style.overflow = "";
@@ -40,10 +39,8 @@ export function Preloader() {
       }
     });
 
-    tl.to(".preloader-text-1", { opacity: 1, y: 0, duration: 1, ease: "power3.out" })
-      .to(".preloader-text-1", { opacity: 0, y: -20, duration: 0.8, ease: "power3.in", delay: 0.5 })
-      .to(".preloader-text-2", { opacity: 1, y: 0, duration: 1, ease: "power3.out" })
-      .to(".preloader-text-2", { opacity: 0, y: -20, duration: 0.8, ease: "power3.in", delay: 0.5 })
+    tl.to(".preloader-text-1", { opacity: 1, y: 0, duration: 1.5, ease: "power3.out", delay: 0.2 })
+      .to(".preloader-text-1", { opacity: 0, y: -20, duration: 0.8, ease: "power3.in", delay: 1.5 })
       .to(".preloader-bg", { yPercent: -100, duration: 1.2, ease: "expo.inOut" });
 
   }, []);
@@ -51,15 +48,13 @@ export function Preloader() {
   if (!isLoading) return null;
 
   return (
-    <div className="preloader-bg fixed inset-0 z-[10000] bg-zinc-950 flex items-center justify-center pointer-events-none">
+    <div className="preloader-bg fixed inset-0 z-[10000] bg-zinc-950 flex flex-col items-center justify-center pointer-events-none px-8">
       <div className="text-center absolute">
-        <h1 className="preloader-text-1 opacity-0 translate-y-10 font-serif text-3xl md:text-5xl text-zinc-300 tracking-widest uppercase">
-          Houze Guo
-        </h1>
-      </div>
-      <div className="text-center absolute">
-        <h1 className="preloader-text-2 opacity-0 translate-y-10 font-serif text-2xl md:text-4xl text-zinc-500 italic max-w-2xl px-4">
-          &quot;The closer you look, the less you see.&quot;
+        <h1 className="preloader-text-1 opacity-0 translate-y-10 font-serif text-2xl md:text-4xl text-zinc-300 italic max-w-3xl leading-relaxed">
+          &quot;Any sufficiently advanced technology is indistinguishable from magic.&quot;
+          <span className="block mt-6 text-sm font-sans text-zinc-500 tracking-[0.5em] uppercase not-italic">
+            Arthur C. Clarke
+          </span>
         </h1>
       </div>
     </div>
