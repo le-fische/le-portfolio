@@ -63,7 +63,7 @@ export default function Home() {
   useGSAP(() => {
     const cards = gsap.utils.toArray<HTMLElement>(".scatter-card");
     
-    // Start all cards stacked exactly in the center, perfectly hidden inside the box
+    // Initial state: Cards perfectly hidden inside the box
     gsap.set(cards, { 
       top: "50%",
       left: "50%",
@@ -75,32 +75,60 @@ export default function Home() {
       rotationX: 0,
       rotationY: 0,
       rotationZ: 0,
-      scale: 0.65, // Fit snugly inside the 3D box
-      opacity: 1 // Don't fade them, let the box obscure them physically!
+      scale: 0.65, 
+      opacity: 1 
     });
+
+    // Initial state: Box is closed, rotated to show its depth
+    gsap.set(".tuckbox-box", { rotationX: 15, rotationY: -25 });
+    // Lid folded flat over the top (rotationX: -90)
+    gsap.set(".tuckbox-lid", { z: -30, rotationX: -90, transformOrigin: "top" });
 
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: "#tuckbox-container",
-        start: "top center",
-        end: "+=150%", // Longer scrub for smoother fly-out
+        trigger: deckRef.current,
+        start: "top top",
+        end: "+=200%", // 200vh of scrolling to play the whole sequence
         scrub: 1,
+        pin: true, // PIN THE ENTIRE SECTION so the box stays on screen!
       }
     });
 
-    // 1. Shoot up out of the box
+    // Step 1: Rotate box to face front, open the lid
+    tl.to(".tuckbox-box", {
+      rotationX: 0,
+      rotationY: 0,
+      duration: 1,
+      ease: "power2.inOut",
+    }, 0)
+    .to(".tuckbox-lid", {
+      rotationX: 0, // Opens backwards, folding flat against the back face
+      duration: 1,
+      ease: "power2.inOut",
+    }, 0);
+
+    // Step 2: Fade out box
+    tl.to(".tuckbox-box", {
+      opacity: 0,
+      scale: 0.8,
+      duration: 0.5,
+      ease: "power2.in",
+    }, 1.0);
+
+    // Step 3: Shoot up out of the box (starting exactly as the box fades)
     tl.to(cards, {
-      y: -250, // Slide straight up out of the top of the box
+      y: -250, 
       scale: 0.8,
       duration: 0.4,
       stagger: 0.05,
       ease: "power2.out",
     }, 1.0)
-    // 2. Fan out to their target positions
+    
+    // Step 4: Fan out to their target positions
     .to(cards, {
       x: (_, target) => parseFloat(target.dataset.targetX || "0"),
       y: (_, target) => parseFloat(target.dataset.targetY || "0"),
-      rotationZ: () => (Math.random() - 0.5) * 15, // Slight random tilt for realism
+      rotationZ: () => (Math.random() - 0.5) * 15, 
       scale: 1,
       duration: 0.6,
       stagger: 0.02,
@@ -114,8 +142,8 @@ export default function Home() {
       <HeroSequence />
 
       {/* Main Content: The Aces & Jokers */}
-      <section ref={deckRef} className="relative z-10 py-32 flex flex-col items-center min-h-[150vh]">
-        <h2 className="font-serif text-3xl mb-32 text-charcoal">Select Your Discipline</h2>
+      <section ref={deckRef} className="relative z-10 py-32 flex flex-col items-center min-h-screen">
+        <h2 className="font-serif text-3xl mb-12 text-charcoal">Select Your Discipline</h2>
         
         <TuckBox>
           <div className="relative w-full h-full flex items-center justify-center pointer-events-none">
