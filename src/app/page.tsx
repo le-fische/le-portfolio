@@ -81,8 +81,8 @@ export default function Home() {
 
     // Initial state: Box is closed, rotated to show its front and side
     gsap.set(".tuckbox-box", { rotationX: 10, rotationY: -15, x: 0, y: 0, rotationZ: 0, scale: 1 });
-    // Lid folded flat over the top (rotationX: 90 closes it backward from the front face)
-    gsap.set(".tuckbox-lid", { z: 30, rotationX: 90, transformOrigin: "top" });
+    // Lid folded flat over the top (rotationX: -90 closes it backward from the front face)
+    gsap.set(".tuckbox-lid", { z: 30, rotationX: -90, transformOrigin: "top" });
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -104,7 +104,7 @@ export default function Home() {
     
     // Step 2: Open the flap (like a laptop screen)
     tl.to(".tuckbox-lid", {
-      rotationX: 180, // Flips UP and backwards, away from the camera
+      rotationX: -180, // Flips UP and backwards, away from the camera
       duration: 0.6,
       ease: "power2.inOut",
     }, 1.0);

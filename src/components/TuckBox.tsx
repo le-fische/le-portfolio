@@ -9,18 +9,16 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function TuckBox({ children }: { children: React.ReactNode }) {
   return (
-    <div id="tuckbox-container" className="relative w-full flex justify-center items-center z-20 min-h-[300px]">
+    <div id="tuckbox-container" className="relative w-full flex justify-center items-center z-20 min-h-[300px] [perspective:2000px] [transform-style:preserve-3d]">
       
-      {/* The Cards (Siblings, so they don't fade out when the box fades out) */}
-      <div className="absolute inset-0 flex items-center justify-center z-10">
+      {/* The Cards (Siblings in 3D space so they get depth-sorted INSIDE the box!) */}
+      <div className="absolute inset-0 flex items-center justify-center [transform:translateZ(0px)]">
         {children}
       </div>
 
-      {/* The 3D Box with its own perspective wrapper */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30 [perspective:2000px]">
-        <div 
-          className="tuckbox-box relative w-52 h-72 [transform-style:preserve-3d]"
-        >
+      {/* The 3D Box */}
+      <div className="tuckbox-box relative w-52 h-72 [transform-style:preserve-3d]">
+        <div className="absolute inset-0 [transform-style:preserve-3d]">
           {/* Front Face */}
           <div className="absolute inset-0 bg-[#111] border-2 border-gold rounded-lg [transform:translateZ(30px)] flex flex-col items-center justify-center p-4 shadow-2xl">
             <h3 className="font-serif text-gold text-2xl uppercase tracking-widest text-center border-b border-gold pb-2 mb-2 w-full">Houze</h3>
@@ -45,8 +43,11 @@ export function TuckBox({ children }: { children: React.ReactNode }) {
 
           {/* Top Face (The Lid) */}
           <div 
-            className="tuckbox-lid absolute top-0 left-0 w-full h-[60px] bg-[#1a1a1a] border-2 border-gold flex items-center justify-center"
+            className="tuckbox-lid absolute top-0 left-0 w-full h-[60px] bg-[#1a1a1a] border-2 border-gold flex justify-center"
           >
+            {/* The tuck tab (rounded semicircle) */}
+            <div className="absolute top-[56px] w-[60%] h-[25px] bg-[#1a1a1a] border-2 border-t-0 border-gold rounded-b-3xl" />
+            
             {/* A small seal on the lid */}
             <div className="w-12 h-6 bg-red-800 border-2 border-red-900 absolute left-1/2 -translate-x-1/2 -bottom-3 z-10 rounded-sm flex items-center justify-center shadow-lg">
               <span className="text-[8px] text-red-300 font-serif">V</span>
