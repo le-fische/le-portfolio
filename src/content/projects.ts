@@ -106,7 +106,7 @@ export const projects: Project[] = [
       "A test rig that lands a robotic payload at a random position and orientation on an 8x8 ft designated landing zone, so capture and release can be rehearsed without tying up the competition aircraft.",
     year: "2026",
     date: "Summer 2026",
-    categories: ["Mechanical"],
+    categories: ["Mechanical", "Embedded"],
     role: "Concept evaluation, structural and kinematic analysis",
     stack: ["SolidWorks", "Hand calculation"],
     source: { label: "UBC AeroDesign" },
