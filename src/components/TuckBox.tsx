@@ -1,77 +1,44 @@
-"use client";
-
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
-
-export function TuckBox({ children }: { children: React.ReactNode }) {
+/**
+ * The tuck box. Pure markup: every transform is driven by the Intro timeline,
+ * which targets these class names. Faces are positioned on a 30px half-depth so
+ * the cards (siblings in the same 3D context) depth-sort inside the box.
+ */
+export function TuckBox() {
   return (
-    <div id="tuckbox-container" className="relative w-full flex justify-center items-center z-20 min-h-[300px] [perspective:2000px] [transform-style:preserve-3d]">
-      
-      {/* The Cards (Siblings in 3D space so they get depth-sorted INSIDE the box!) */}
-      <div className="absolute inset-0 flex items-center justify-center [transform:translateZ(0px)]">
-        {children}
+    <div className="tuckbox relative h-72 w-52 [transform-style:preserve-3d]">
+      {/* Front */}
+      <div className="absolute inset-0 flex flex-col items-center rounded-md border border-white/15 bg-stage p-4 [transform:translateZ(30px)]">
+        <h3 className="w-full border-b border-white/15 pb-2 text-center font-display text-2xl text-canvas">
+          Houze
+        </h3>
+        <p className="label mt-2 text-canvas/40">Playing Cards</p>
+        <div className="flex flex-1 items-center justify-center text-5xl text-accent">&#9824;</div>
+        <p className="label text-canvas/40">Vancouver</p>
       </div>
 
-      {/* The 3D Box */}
-      <div className="tuckbox-box relative w-52 h-72 [transform-style:preserve-3d]">
-        <div className="absolute inset-0 [transform-style:preserve-3d]">
-          {/* Front Face */}
-          <div className="absolute inset-0 bg-[#111] border-2 border-gold rounded-lg [transform:translateZ(30px)] flex flex-col items-center justify-center p-4 shadow-2xl">
-            <h3 className="font-serif text-gold text-2xl uppercase tracking-widest text-center border-b border-gold pb-2 mb-2 w-full">Houze</h3>
-            <p className="text-zinc-500 font-sans text-xs tracking-[0.3em] uppercase text-center">Playing Cards</p>
-            <div className="flex-grow flex items-center justify-center">
-              <span className="text-5xl text-gold opacity-50">♠</span>
-            </div>
-            <p className="text-gold font-serif text-sm tracking-widest uppercase">Made In 2007</p>
-          </div>
+      {/* Back */}
+      <div className="absolute inset-0 overflow-hidden rounded-md border border-white/10 bg-stage [transform:translateZ(-30px)_rotateY(180deg)] [transform-style:preserve-3d]">
+        <div className="absolute inset-0 opacity-50 [background:repeating-linear-gradient(45deg,transparent_0_10px,#242220_10px_11px)]" />
+        <div className="absolute bottom-5 left-5 h-1.5 w-10 bg-canvas/70" />
+        <div className="absolute top-5 right-5 h-1.5 w-8 bg-accent" />
+        <div className="absolute inset-0 flex items-center justify-center font-mono text-3xl font-bold tracking-[0.3em] text-canvas/20">
+          XO
+        </div>
+        {/* Lower half of the tear seal: stays on the box when the lid lifts. */}
+        <div className="absolute top-[30px] left-1/2 h-4 w-14 -translate-x-1/2 rounded-b-sm bg-accent [transform:translateZ(1px)]" />
+      </div>
 
-          {/* Back Face */}
-          <div className="absolute inset-0 bg-[#0a0a0a] border border-zinc-800 rounded-lg [transform:translateZ(-30px)_rotateY(180deg)] [transform-style:preserve-3d]">
-             {/* Prinstream-style Tech Pattern */}
-             <div className="absolute inset-0 rounded-lg overflow-hidden flex items-center justify-center opacity-40">
-               {/* Diagonal striping */}
-               <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,#222_10px,#222_11px)]" />
-               {/* X O decals */}
-               <div className="flex gap-4 font-mono text-zinc-600 text-3xl font-black tracking-widest z-0">
-                 <span>X</span>
-                 <span>O</span>
-               </div>
-               {/* Accent blocks */}
-               <div className="absolute bottom-4 left-4 w-12 h-2 bg-zinc-300" />
-               <div className="absolute top-4 right-4 w-8 h-2 bg-gold" />
-             </div>
+      {/* Sides and base */}
+      <div className="absolute top-0 left-0 h-full w-[60px] origin-left bg-stage brightness-125 [transform:translateZ(30px)_rotateY(90deg)]" />
+      <div className="absolute top-0 right-0 h-full w-[60px] origin-right bg-stage brightness-125 [transform:translateZ(30px)_rotateY(-90deg)]" />
+      <div className="absolute bottom-0 left-0 h-[60px] w-full origin-bottom bg-stage [transform:translateZ(30px)_rotateX(90deg)]" />
 
-             {/* Bottom half of the seal (Stays on the box when lid opens!) */}
-             <div className="w-14 h-4 bg-[#b22222] border-2 border-t-0 border-[#8b0000] absolute left-1/2 -translate-x-1/2 top-[30px] rounded-b-sm flex items-center justify-center overflow-hidden [transform:translateZ(1px)]">
-               <span className="text-[10px] text-red-300 font-serif -translate-y-[2px]">V</span>
-             </div>
-          </div>
-
-          {/* Left Face */}
-          <div className="absolute left-0 top-0 h-full w-[60px] bg-[#141414] border border-zinc-800 origin-left [transform:translateZ(30px)_rotateY(90deg)]" />
-
-          {/* Right Face */}
-          <div className="absolute right-0 top-0 h-full w-[60px] bg-[#141414] border border-zinc-800 origin-right [transform:translateZ(30px)_rotateY(-90deg)]" />
-
-          {/* Bottom Face */}
-          <div className="absolute bottom-0 left-0 w-full h-[60px] bg-[#0a0a0a] border border-zinc-800 origin-bottom [transform:translateZ(30px)_rotateX(90deg)]" />
-
-          {/* Top Face (The Lid) */}
-          <div 
-            className="tuckbox-lid absolute top-0 left-0 w-full h-[60px] bg-[#1a1a1a] border-2 border-gold flex justify-center [transform-style:preserve-3d]"
-          >
-            {/* The tuck tab (rounded semicircle folded at 90 deg OUTSIDE the box) */}
-            <div className="absolute top-[58px] w-[50%] h-[30px] bg-[#1a1a1a] border-2 border-t-0 border-gold rounded-b-3xl origin-top [transform:rotateX(90deg)_translateZ(1px)] [transform-style:preserve-3d]">
-              
-              {/* Top half of the seal (Stuck to the OUTSIDE of the tuck tab, tears away!) */}
-              <div className="absolute top-0 w-14 h-[30px] bg-[#b22222] border-2 border-b-0 border-[#8b0000] left-1/2 -translate-x-1/2 rounded-t-sm [transform:translateZ(1px)]" />
-              
-            </div>
-          </div>
+      {/* Lid, hinged at the top edge */}
+      <div className="tuckbox-lid absolute top-0 left-0 flex h-[60px] w-full justify-center border-b border-white/10 bg-stage brightness-110 [transform-style:preserve-3d]">
+        {/* Tuck tab, folded out over the back face */}
+        <div className="absolute top-[58px] h-[30px] w-1/2 origin-top rounded-b-3xl bg-stage brightness-110 [transform:rotateX(90deg)_translateZ(1px)] [transform-style:preserve-3d]">
+          {/* Upper half of the tear seal */}
+          <div className="absolute top-0 left-1/2 h-[30px] w-14 -translate-x-1/2 rounded-t-sm bg-accent [transform:translateZ(1px)]" />
         </div>
       </div>
     </div>

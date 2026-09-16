@@ -1,37 +1,85 @@
-# The Elegant Illusion: Portfolio Architecture
+# Houze Guo — Portfolio
 
-This repository contains the source code for a highly interactive, magic-themed personal portfolio. 
+A cinematic intro that hands off to a conventional, fast portfolio.
 
-## 🎩 The Concept
-A minimalist, premium engineering portfolio framed as a deck of 54 playing cards. It is designed to act as a clean showcase for serious recruiters, while hiding a massive layer of technical easter eggs and minigames for the curious.
+The intro is a single pinned GSAP timeline: the name shatters, a manifesto
+assembles out of the debris, a 3D tuck box drops in, opens, and fires a fan of
+cards across the screen. When the fan clears, the pin releases and the site
+becomes a normal scrolling page. The deck is a set piece, not navigation.
 
-## 🛠️ Tech Stack & Optimization
-*   **Framework:** Next.js (App Router) using `template.tsx` for layout-shift-free transitions.
-*   **Interactive Animations:** Framer Motion (utilizing `layoutId` for seamless card expansion).
-*   **Scroll Narratives:** GSAP (GreenSock) & ScrollTrigger.
-*   **Global State:** Zustand (Managing persistent minigame scores and UI state).
-*   **Styling:** Tailwind CSS.
+## Stack
 
-## 🎴 The Architecture
-The portfolio is constrained strictly to 54 interactive elements:
-*   **4 Aces (Categories):** Act as the main navigation (Software, Hardware, Mechanical, 3D).
-*   **52 Suit Cards (Projects):** Hovering triggers a 3D flip; clicking expands the card into a full-screen project case study.
-*   **The Black Joker (About Me):** Triggers an embossed Magician's License reveal.
-*   **The Red Joker (Playground):** A chaotic particle reveal for experimental projects.
+- **Next.js 16** (App Router, Turbopack), React 19, TypeScript
+- **GSAP + ScrollTrigger** for all motion (one animation library, not two)
+- **Lenis** for smooth scrolling, driven from the GSAP ticker so ScrollTrigger
+  never reads a stale scroll position
+- **Tailwind CSS v4** with the design system defined as `@theme` tokens
+- **`<model-viewer>`** loaded on demand for in-page `.glb` rendering
 
-## 🔐 The Prestige (Easter Eggs)
-The site is built with three distinct layers of hidden technical flexes:
-1.  **The Joker Eclipse:** Dragging the Jokers together triggers a beautifully animated site crash and dark-mode inversion.
-2.  **The Magic Arcade:** A hidden 3D Tuck Box contains three isolated, lazy-loaded minigames:
-    *   *Illusionist's Minesweeper* (React 2D Array State Flex)
-    *   *Cardshark's Blackjack* (AI Opponent & Persistent Database Flex)
-    *   *Grandmaster's Chess* (Algorithmic Flex)
-3.  **The Riddler's Safe:** Solving CS/Math riddles unlocks a global state "White Rabbit" companion that follows the user.
+## Structure
 
-## 🚀 Development Roadmap
-Development is strictly phased to ensure maximum performance and zero animation conflicts:
-1.  **Phase 1:** Global State (Zustand) & Routing Engine.
-2.  **Phase 2:** Core Deck UI & Framer Motion expansions.
-3.  **Phase 3:** GSAP Scroll Narrative (Arthur C. Clarke quote).
-4.  **Phase 4:** Lazy-loaded Arcade Minigames.
-5.  **Phase 5:** Easter Eggs & Polish.
+```
+src/
+  app/
+    page.tsx                  intro + work index + about + contact
+    work/[slug]/page.tsx      case study
+    work/[slug]/preview/      chromeless full-screen 3D preview
+    globals.css               the entire design system
+  components/
+    Intro.tsx                 the pinned sequence
+    TuckBox.tsx  PlayingCard.tsx
+    ProjectMedia.tsx          image | video | embed | model
+    Reveal.tsx                the one shared scroll reveal
+  content/projects.ts         the entire content layer
+```
+
+## Adding a project
+
+Everything lives in `src/content/projects.ts`. Nothing else hardcodes a
+project. Add an entry, drop assets in `/public`, remove `draft: true`.
+
+Media block kinds:
+
+| kind    | use                                                        |
+| ------- | ---------------------------------------------------------- |
+| `image` | a still, rendered through `next/image`                      |
+| `video` | a self-hosted mp4/webm, muted and looping                   |
+| `embed` | any iframe: Spline, Sketchfab, YouTube, a live deployment   |
+| `model` | a `.glb`, orbit-controlled in the page                      |
+
+Any project containing an `embed` or `model` block automatically gets a
+full-screen route at `/work/<slug>/preview`, linked from its case study.
+
+Remote images need their host added to `images.remotePatterns` in
+`next.config.ts`. Local files under `/public` need nothing.
+
+## Design system
+
+All tokens are in `src/app/globals.css`. Three font families with defined jobs
+(Geist structural, Geist Mono for labels and metadata, Instrument Serif for the
+two quote moments), a fluid type scale, one gutter, one section gap, two
+neutrals, one accent.
+
+Font variables are declared with `@theme inline` so they resolve to the
+`next/font` values rather than colliding with them. Do not hardcode font family
+names in `@theme` — that shadows the loaded webfont and silently falls back.
+
+## Motion rules
+
+- `prefers-reduced-motion` disables Lenis, the pin, and every reveal. The intro
+  falls back to a static stacked hero.
+- Never tween `opacity` on an element carrying `transform-style: preserve-3d`.
+  Opacity below 1 forces `transform-style: flat`, which collapses the tuck box's
+  3D context and paints its back face over its front, mirrored. Use
+  `visibility` plus motion instead.
+- The intro's ScrollTrigger sets `refreshPriority: 1` because its pin adds
+  ~340vh of spacer that moves every trigger below it.
+
+## Development
+
+```bash
+npm run dev
+npm run build
+npx eslint src
+npx tsc --noEmit
+```
