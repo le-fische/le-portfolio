@@ -1,149 +1,77 @@
-"use client";
+import { cn } from "@/lib/cn";
 
-import { motion } from "framer-motion";
+export type Suit = "spade" | "heart" | "diamond" | "club" | "joker-red" | "joker-black";
 
-interface PlayingCardProps {
-  id: string;
-  suit: "♠" | "♣" | "♦" | "♥";
-  value: string;
-  title?: string;
-  isFaceDown?: boolean;
-  isBurned?: boolean;
-  className?: string;
-  onClick?: () => void;
-  drag?: boolean | "x" | "y";
-  onDragEnd?: (event: MouseEvent | TouchEvent | PointerEvent, info: import("framer-motion").PanInfo) => void;
-  dragSnapToOrigin?: boolean;
-  isMarked?: boolean;
-  onMarkClick?: (e: React.MouseEvent) => void;
-}
+const PIP: Record<Exclude<Suit, "joker-red" | "joker-black">, string> = {
+  spade: "♠",
+  heart: "♥",
+  diamond: "♦",
+  club: "♣",
+};
 
-const JokerIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 100 100" className={className} fill="currentColor">
-    {/* Left Droop */}
+const JokerHat = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 100 100" className={className} fill="currentColor" aria-hidden>
     <path d="M 38 72 C 15 70, 10 50, 18 42 C 25 35, 35 48, 38 60 Z" />
     <circle cx="16" cy="38" r="5" />
-    
-    {/* Right Droop */}
     <path d="M 62 72 C 85 70, 90 50, 82 42 C 75 35, 65 48, 62 60 Z" />
     <circle cx="84" cy="38" r="5" />
-    
-    {/* Center Spike */}
     <path d="M 35 68 C 45 50, 35 30, 50 20 C 65 30, 55 50, 65 68 C 55 72, 45 72, 35 68 Z" />
     <circle cx="50" cy="13" r="5" />
-    
-    {/* Headband */}
     <path d="M 32 75 C 40 82, 60 82, 68 75 L 63 85 C 55 90, 45 90, 37 85 Z" />
   </svg>
 );
 
-export function PlayingCard({ id, suit, value, title, isFaceDown = false, isBurned = false, className = "", onClick, drag, onDragEnd, dragSnapToOrigin, isMarked, onMarkClick }: PlayingCardProps) {
-  const isRed = suit === "♦" || suit === "♥";
-  const isJoker = id === "black-joker" || id === "red-joker";
-  
+/**
+ * Stage dressing for the intro sequence. Deliberately non-interactive: the deck
+ * is a set piece, not navigation, so it carries no click affordance.
+ */
+export function PlayingCard({ suit, className }: { suit: Suit; className?: string }) {
+  const isJoker = suit === "joker-red" || suit === "joker-black";
+  const isRed = suit === "heart" || suit === "diamond" || suit === "joker-red";
+  const tone = isRed ? "text-accent" : "text-ink";
+
   return (
-    <motion.div
-      layoutId={`card-${id}`}
-      onClick={onClick}
-      className={`relative w-48 h-72 rounded-2xl cursor-pointer transition-colors duration-500 will-change-transform shadow-[0_20px_50px_rgba(0,0,0,0.15)]
-        ${className}
-      `}
-      whileHover={{ y: -15, scale: 1.05, rotateY: 5, rotateX: 5, z: 50 }}
-      whileTap={{ scale: 0.95 }}
-      drag={drag}
-      onDragEnd={onDragEnd}
-      dragSnapToOrigin={dragSnapToOrigin}
-      dragElastic={0.5}
-      style={{ transformStyle: "preserve-3d" }}
+    <div
+      aria-hidden
+      className={cn(
+        "relative h-64 w-44 rounded-xl shadow-[0_24px_60px_-20px_rgba(20,18,15,0.45)] [transform-style:preserve-3d]",
+        className,
+      )}
     >
-      {/* FRONT FACE */}
-      <div className={`absolute inset-0 w-full h-full rounded-2xl flex flex-col justify-between p-5 border [backface-visibility:hidden] overflow-hidden
-        ${isBurned ? "border-zinc-800 bg-zinc-200 opacity-90 sepia-[.3]" : "border-zinc-200 bg-[#faf9f6]"}
-      `}>
-        {/* Inner Border for elegance */}
-        <div className="absolute inset-2 border border-zinc-200 rounded-xl pointer-events-none" />
+      {/* Face */}
+      <div className="absolute inset-0 flex flex-col justify-between rounded-xl border border-line bg-canvas p-4 [backface-visibility:hidden]">
+        <div className="pointer-events-none absolute inset-2 rounded-lg border border-line/70" />
 
-        {/* Burn mark overlays */}
-        {isBurned && (
-          <>
-            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-black/40 to-transparent rounded-tr-2xl mix-blend-multiply" />
-            <div className="absolute bottom-0 left-0 w-20 h-20 bg-gradient-to-tr from-black/60 to-transparent rounded-bl-2xl mix-blend-multiply" />
-          </>
-        )}
-
-        {/* The Marked Card Easter Egg */}
-        {isMarked && (
-          <div 
-            className="absolute bottom-3 right-3 w-1.5 h-1.5 rounded-full bg-zinc-400 opacity-50 cursor-crosshair z-20 hover:opacity-100 transition-opacity"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onMarkClick) onMarkClick(e);
-            }}
-          />
-        )}
-        
-        {/* Card Content based on type */}
         {isJoker ? (
-          <div className="w-full h-full flex flex-col relative">
-            {/* Joker Corner Marks */}
-            <div className={`absolute top-0 left-0 text-center leading-[0.8] ${isRed ? "text-red-700" : "text-zinc-900"}`}>
-              <div className="text-sm font-serif font-bold tracking-widest flex flex-col gap-0.5">
-                <span>J</span><span>O</span><span>K</span><span>E</span><span>R</span>
-              </div>
-            </div>
-            
-            <div className={`absolute bottom-0 right-0 text-center leading-[0.8] rotate-180 ${isRed ? "text-red-700" : "text-zinc-900"}`}>
-              <div className="text-sm font-serif font-bold tracking-widest flex flex-col gap-0.5">
-                <span>J</span><span>O</span><span>K</span><span>E</span><span>R</span>
-              </div>
-            </div>
-
-            {/* Central Graphic */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-               <JokerIcon className={`w-20 h-20 mb-4 ${isRed ? "text-red-700" : "text-zinc-900"}`} />
-               <div className={`font-serif font-bold text-xl uppercase tracking-[0.2em] text-center flex flex-col gap-1 ${isRed ? "text-red-700" : "text-zinc-900"}`}>
-                 {(title || "").split(' ').map((word, i) => (
-                    <span key={i}>{word}</span>
-                 ))}
-               </div>
-            </div>
+          <div className="relative flex h-full w-full flex-col items-center justify-center">
+            <JokerHat className={cn("mb-3 h-16 w-16", tone)} />
+            <span className={cn("label", tone)}>Joker</span>
           </div>
         ) : (
           <>
-            <div className={`text-2xl font-serif font-bold ${isRed ? "text-red-700" : "text-zinc-900"} leading-none`}>
-              {value}
-              <div className="text-3xl mt-1">{suit}</div>
+            <div className={cn("font-display text-2xl leading-none", tone)}>
+              A<span className="mt-0.5 block text-xl">{PIP[suit]}</span>
             </div>
-            
-            {title && (
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full px-4 text-center">
-                <h3 className="font-sans text-sm tracking-[0.2em] uppercase text-zinc-800 break-words leading-relaxed">{title}</h3>
-              </div>
-            )}
-
-            <div className={`text-2xl font-serif font-bold ${isRed ? "text-red-700" : "text-zinc-900"} self-end rotate-180 leading-none`}>
-              {value}
-              <div className="text-3xl mt-1">{suit}</div>
+            <div className={cn("self-center text-5xl leading-none opacity-90", tone)}>
+              {PIP[suit]}
+            </div>
+            <div className={cn("rotate-180 self-end font-display text-2xl leading-none", tone)}>
+              A<span className="mt-0.5 block text-xl">{PIP[suit]}</span>
             </div>
           </>
         )}
       </div>
 
-      {/* BACK FACE (Prinstream Tech Pattern) */}
-      <div className="absolute inset-0 w-full h-full rounded-2xl bg-[#0a0a0a] border border-zinc-800 [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-hidden flex items-center justify-center">
-        <div className="absolute inset-2 border border-zinc-800 rounded-xl pointer-events-none z-10" />
-        
-        <div className="absolute inset-0 opacity-40">
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,#222_10px,#222_11px)]" />
-          <div className="absolute bottom-6 left-6 w-8 h-2 bg-zinc-300" />
-          <div className="absolute top-6 right-6 w-8 h-2 bg-gold" />
-        </div>
-        
-        <div className="flex gap-2 font-mono text-zinc-600 text-2xl font-black tracking-widest z-0 opacity-50">
-          <span>X</span>
-          <span>O</span>
+      {/* Back */}
+      <div className="absolute inset-0 overflow-hidden rounded-xl bg-stage [backface-visibility:hidden] [transform:rotateY(180deg)]">
+        <div className="absolute inset-0 opacity-50 [background:repeating-linear-gradient(45deg,transparent_0_10px,#242220_10px_11px)]" />
+        <div className="pointer-events-none absolute inset-2 rounded-lg border border-white/10" />
+        <div className="absolute bottom-6 left-6 h-1.5 w-8 bg-canvas/70" />
+        <div className="absolute top-6 right-6 h-1.5 w-8 bg-accent" />
+        <div className="absolute inset-0 flex items-center justify-center font-mono text-2xl font-bold tracking-[0.3em] text-canvas/20">
+          XO
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

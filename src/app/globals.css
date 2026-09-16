@@ -1,49 +1,134 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/* ---------------------------------------------------------------------------
+   Font tokens.
+   `@theme inline` emits `font-family: var(--font-geist)` into the utilities
+   instead of copying the value. next/font owns --font-geist / --font-geist-mono
+   / --font-instrument on <html>, so there is no `:root` vs `.className`
+   specificity collision and the real webfont always wins.
+   --------------------------------------------------------------------------- */
+@theme inline {
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
+}
 
 @theme {
-  --color-ivory: #FAFAFA;
-  --color-charcoal: #1A1A1A;
-  --color-crimson: #8B0000;
-  --color-gold: #D4AF37;
-  --font-serif: "Playfair Display", serif;
-  --font-sans: "Inter", sans-serif;
+  /* --- Color: two neutrals, one accent, one stage. Nothing else. --- */
+  --color-canvas: #faf9f6; /* page background */
+  --color-ink: #14120f; /* primary text */
+  --color-muted: #6e6a63; /* secondary text */
+  --color-line: #e3e0d9; /* hairlines and borders */
+  --color-accent: #a4161a; /* the single red; 6.2:1 on canvas */
+  --color-stage: #0b0a09; /* the dark "stage" for card backs and the tuck box */
+
+  /* --- Type scale: 1.25 ratio, fluid between mobile and desktop. --- */
+  --text-display: clamp(3rem, 10.5vw, 8.5rem);
+  --text-display--line-height: 0.88;
+  --text-display--letter-spacing: -0.04em;
+
+  --text-h1: clamp(2.25rem, 5.5vw, 4rem);
+  --text-h1--line-height: 0.96;
+  --text-h1--letter-spacing: -0.03em;
+
+  --text-h2: clamp(1.75rem, 3.2vw, 2.5rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.025em;
+
+  --text-h3: clamp(1.125rem, 1.8vw, 1.375rem);
+  --text-h3--line-height: 1.3;
+  --text-h3--letter-spacing: -0.012em;
+
+  --text-lead: clamp(1.0625rem, 1.35vw, 1.25rem);
+  --text-lead--line-height: 1.55;
+  --text-lead--letter-spacing: -0.008em;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.6;
+
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.14em;
+
+  /* --- Rhythm: one page gutter, one section gap. --- */
+  --spacing-gutter: clamp(1.25rem, 5vw, 4.5rem);
+  --spacing-section: clamp(5rem, 11vw, 9rem);
+
+  /* --- Motion --- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-body {
-  background-color: var(--color-ivory);
-  color: var(--color-charcoal);
-  font-family: var(--font-sans);
-  overflow-x: hidden;
-}
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
 
-@media (min-width: 768px) {
   body {
-    cursor: none;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
-  a, button, [role="button"] {
-    cursor: none;
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-canvas);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-canvas);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line);
+    border: 3px solid var(--color-canvas);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-muted);
   }
 }
 
-/* Custom scrollbar for an elegant feel */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-ivory);
-}
-::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #aaa;
+/* Reduced-motion visitors never see the curtain at all. Handled in CSS rather
+   than JS so there is no frame where it is painted and then removed. */
+@media (prefers-reduced-motion: reduce) {
+  .curtain {
+    display: none;
+  }
 }
 
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+/* The one repeated text treatment worth a utility: tracked-out mono labels. */
+@utility label {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: uppercase;
 }
-.animate-fade-in {
-  animation: fadeIn 2s ease-in-out 6s forwards;
+
+/* Honour the OS setting. The scroll sequence also opts out in JS
+   (see Intro.tsx) so it never pins on a reduced-motion machine. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
