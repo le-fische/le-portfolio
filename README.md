@@ -53,9 +53,20 @@ jokers instead: no glyph on the page means two different things.
 (`{ label: "GitHub", href: "..." }`), a team (`{ label: "UBC AeroDesign" }`) and
 a course (`{ label: "APSC 101" }`) are all valid.
 
-Blocks are either `text` or `image`. Video, iframe embeds (Spline, Sketchfab,
-a live deployment) and in-page `.glb` models were built and then removed in the
-commit after `689e6ea`; restore them from there rather than rewriting them.
+Blocks come in four kinds:
+
+| kind    | use                                                              |
+| ------- | ---------------------------------------------------------------- |
+| `text`  | prose; `note: true` sets it quieter and italic for a reflection   |
+| `list`  | key decisions, as `{ term, detail }` pairs                        |
+| `specs` | the numbers the project was held to, as `{ label, value }` rows   |
+| `image` | a still from `/public`, `wide: true` to span the content column   |
+
+Video, iframe embeds (Spline, Sketchfab, a live deployment) and in-page `.glb`
+models were built and then removed in the commit after `689e6ea`; restore them
+from there rather than rewriting them.
+
+Project images live in `/public/work/`.
 
 Remote images need their host added to `images.remotePatterns` in
 `next.config.ts`. Local files under `/public` need nothing.

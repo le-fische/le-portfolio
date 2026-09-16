@@ -316,8 +316,8 @@ export function Intro() {
             <span ref={nameRef}>Houze Guo</span>
           </h1>
           <p ref={blurbRef} className="text-lead mt-8 max-w-xl text-balance text-muted">
-            Computer engineering student at UBC. I build things that sit between hardware and
-            software, and I do card tricks.
+            Second-year computer engineering at UBC, payload systems on AeroDesign. I work the
+            seam between mechanism, firmware and software, and I do card tricks.
           </p>
         </div>
 

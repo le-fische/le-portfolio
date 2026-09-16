@@ -102,18 +102,20 @@ export default function Home() {
           <div className="mt-14 grid grid-cols-1 gap-x-gutter gap-y-12 lg:grid-cols-12">
             <Reveal className="lg:col-span-7">
               <p className="text-h2 max-w-2xl text-balance font-medium">
-                I like problems that live on the seam between hardware and software, where the
-                abstraction stops being reliable.
+                The fastest path to a working design runs through visible failure.
               </p>
               <div className="mt-8 max-w-xl space-y-5 text-body text-muted">
                 <p>
-                  I&rsquo;m a computer engineering student at UBC, class of 2029. Most of what I
-                  build ends up involving a microcontroller, a mechanical constraint, and a deadline
-                  that makes the elegant approach impossible.
+                  Across these nine projects, one pattern repeats. Round 1 of the cardboard chair.
+                  The off-centre push pad on Kendora&rsquo;s Box. The power-rail brownout on the
+                  claw. The silent Supabase RLS failures on Pioneer. The H-channel that joined two
+                  DLZ panels perfectly and left a ridge across the landing surface. The chess results
+                  that were wrong by a factor of 3.7 until the measurement protocol caught them.
                 </p>
                 <p>
-                  Away from that I do close-up card magic, which turns out to be the same discipline:
-                  a controlled system, a lot of hidden state, and one visible result.
+                  Each was a problem theory couldn&rsquo;t surface and only a built, tested artifact
+                  could. I value design teams that build early, test honestly, and treat iteration
+                  count as a measure of learning rather than wasted effort.
                 </p>
               </div>
             </Reveal>
@@ -126,7 +128,13 @@ export default function Home() {
                 </div>
                 <div className="border-t border-line pt-4">
                   <dt className="label text-muted">Team</dt>
-                  <dd className="mt-2 text-body">UBC AeroDesign, ADV Fuselage</dd>
+                  <dd className="mt-2 text-body">UBC AeroDesign, payload systems</dd>
+                </div>
+                <div className="border-t border-line pt-4">
+                  <dt className="label text-muted">Works on</dt>
+                  <dd className="mt-2 text-body">
+                    Mechanism design, MCU firmware, full-stack software
+                  </dd>
                 </div>
                 <div className="border-t border-line pt-4">
                   <dt className="label text-muted">Based in</dt>
