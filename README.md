@@ -62,6 +62,10 @@ Blocks come in four kinds:
 | `specs` | the numbers the project was held to, as `{ label, value }` rows   |
 | `image` | a still from `/public`, `wide: true` to span the content column   |
 
+Give every image its intrinsic `width` and `height`. With them it lays out at
+its true ratio; without them it falls back to a contained 16/10 box. Neither
+path crops, because these are CAD renders and charts whose edges carry content.
+
 Video, iframe embeds (Spline, Sketchfab, a live deployment) and in-page `.glb`
 models were built and then removed in the commit after `689e6ea`; restore them
 from there rather than rewriting them.

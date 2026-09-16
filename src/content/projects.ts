@@ -36,6 +36,13 @@ export type ImageBlock = {
   /** Path under /public, or a remote URL allowed in next.config.ts. */
   src: string;
   alt: string;
+  /**
+   * Intrinsic pixel size. Supplying it lets the image render at its true
+   * aspect ratio instead of being cropped into a fixed box, which matters
+   * because these are CAD renders and charts whose edges carry content.
+   */
+  width?: number;
+  height?: number;
   caption?: string;
   /** Span the full content column instead of the prose measure. */
   wide?: boolean;
@@ -69,7 +76,10 @@ export type Project = {
   slug: string;
   title: string;
   summary: string;
+  /** Drives timeline grouping and ordering. */
   year: string;
+  /** Shown on the case study when the source is more precise than a year. */
+  date?: string;
   /** One or more. The first is the primary and leads everywhere it is listed. */
   categories: Category[];
   role?: string;
@@ -95,6 +105,7 @@ export const projects: Project[] = [
     summary:
       "A test rig that lands a robotic payload at a random position and orientation on an 8x8 ft designated landing zone, so capture and release can be rehearsed without tying up the competition aircraft.",
     year: "2026",
+    date: "Summer 2026",
     categories: ["Mechanical"],
     role: "Concept evaluation, structural and kinematic analysis",
     stack: ["SolidWorks", "Hand calculation"],
@@ -102,12 +113,16 @@ export const projects: Project[] = [
     cover: {
       kind: "image",
       src: "/work/payload-test-stand-concept.jpg",
+      width: 1005,
+      height: 660,
       alt: "Concept assembly of the cable-driven test stand",
     },
     blocks: [
       {
         kind: "image",
         src: "/work/payload-test-stand-concept.jpg",
+        width: 1005,
+        height: 660,
         alt: "Four guyed masts around the 8x8 ft landing zone with a plane mockup suspended at centre",
         caption: "Concept assembly — four guyed masts around the DLZ, plane mockup suspended at centre",
         wide: true,
@@ -167,6 +182,8 @@ export const projects: Project[] = [
       {
         kind: "image",
         src: "/work/payload-test-stand-masts.jpg",
+        width: 1063,
+        height: 711,
         alt: "Mast and base-stand arrangement with winches mounted at ground level",
         caption: "Mast and base-stand arrangement — winches mounted at ground level",
         wide: true,
@@ -174,6 +191,8 @@ export const projects: Project[] = [
       {
         kind: "image",
         src: "/work/payload-test-stand-matrix.jpg",
+        width: 1600,
+        height: 958,
         alt: "Weighted decision matrix comparing five concepts across seven criteria",
         caption: "Weighted decision matrix — five architectures scored across seven criteria; CDPR wins at 7.85 / 10",
         wide: true,
@@ -193,6 +212,7 @@ export const projects: Project[] = [
     summary:
       "A folding, modular 8x8 ft designated landing zone replacing a damaged one-piece coroplast board. Sized to fit a 2 ft storage shelf, deployable by one person in under 90 seconds, repairable one panel at a time.",
     year: "2026",
+    date: "Summer 2026",
     categories: ["Mechanical"],
     role: "Full design ownership",
     stack: ["SolidWorks", "FDM printing"],
@@ -200,12 +220,16 @@ export const projects: Project[] = [
     cover: {
       kind: "image",
       src: "/work/dlz-fold-open.jpg",
+      width: 825,
+      height: 721,
       alt: "Interleaved knuckle fold joint with panels open",
     },
     blocks: [
       {
         kind: "image",
         src: "/work/dlz-fold-open.jpg",
+        width: 825,
+        height: 721,
         alt: "Selected fold joint, interleaved knuckles on a continuous pin, panels open",
         caption: "Selected fold joint — interleaved knuckles on a continuous pin, panels open",
         wide: true,
@@ -262,6 +286,8 @@ export const projects: Project[] = [
       {
         kind: "image",
         src: "/work/dlz-fold-closed.jpg",
+        width: 595,
+        height: 719,
         alt: "The same joint folded through 180 degrees, knuckles nested",
         caption: "Same joint folded through 180 degrees — the knuckles nest, the pin stays below the surface",
         wide: true,
@@ -269,18 +295,24 @@ export const projects: Project[] = [
       {
         kind: "image",
         src: "/work/dlz-u-channel.jpg",
+        width: 942,
+        height: 1242,
         alt: "U-channel joint concept",
         caption: "C1 — U-channel",
       },
       {
         kind: "image",
         src: "/work/dlz-h-channel.jpg",
+        width: 1496,
+        height: 1477,
         alt: "H-channel joint concept",
         caption: "C2 — H-channel, the prototype that exposed the flushness requirement",
       },
       {
         kind: "image",
         src: "/work/dlz-configuration-study.jpg",
+        width: 1600,
+        height: 652,
         alt: "Configuration study comparing three panel layouts",
         caption: "Configuration study A/B/C — strips, 24 in grid, and four 48 in panels",
         wide: true,
@@ -298,20 +330,46 @@ export const projects: Project[] = [
     slug: "ai-chessathon",
     title: "AI Chessathon Chess Engine",
     summary:
-      "A chess engine written from scratch in Python over nine days for a 465-entrant competition. Negamax search compiled with Numba to 2.7M nodes/second, a tapered classical evaluation, and thirteen builds each gated behind a match against a frozen snapshot.",
+      "A chess engine written from scratch in Python over nine days for a 465-entrant competition. Negamax search compiled with Numba to 2.7M nodes/second, a tapered classical evaluation, and thirteen builds each gated on a match against a frozen snapshot. Finished 199th, peak rating 1835.",
     year: "2026",
+    date: "Sept 2026, 9 days",
     categories: ["Software"],
     role: "Search, evaluation, benchmarking",
     stack: ["Python", "Numba", "PyTorch"],
     source: { label: "GitHub", href: "https://github.com/le-fische/AIChessathon" },
+    cover: {
+      kind: "image",
+      src: "/work/chess-ladder.jpg",
+      width: 1800,
+      height: 1012,
+      alt: "Rating across 108 rated games, peaking at 1835",
+    },
     blocks: [
+      {
+        kind: "image",
+        src: "/work/chess-architecture.jpg",
+        width: 1800,
+        height: 1136,
+        alt: "Engine architecture: two search paths sharing one evaluation contract",
+        caption: "Architecture — two search paths, one evaluation contract",
+        wide: true,
+      },
       {
         kind: "text",
         heading: "Engine",
         body: [
-          "Search is negamax with alpha-beta and the standard stack on top: iterative deepening, transposition tables, MVV-LVA ordering with killer and history heuristics, quiescence, null-move pruning, late move reductions, aspiration windows, and check extensions. Compiled with Numba it reaches 2.7M nodes/second and 12.4 plies at tournament control; the pure-Python fallback manages 58k and 6 plies, which is why a required-JIT flag turns that silent fallback into a hard error. Without it a match measures Python against Python and the numbers mean nothing.",
-          "The evaluation that shipped is classical: tapered PeSTO piece-square tables interpolated over game phase, passed-pawn and king-shelter terms, and Syzygy tablebase probing for four-piece endings. A 768-256-1 NNUE was built and trained in PyTorch but never shipped. It scored 1.7% over 60 games against the classical evaluator, its training set of 2M samples at depth 8 too shallow to beat hand-tuned tables.",
+          "Search is negamax with alpha-beta over bitboards, with iterative deepening, transposition tables, MVV-LVA ordering with killer and history heuristics, quiescence, null-move pruning, late move reductions, aspiration windows and check extensions.",
+          "Two implementations run that same algorithm: a Numba-JIT path that plays, and a pure-Python fallback that serves as the readable definition of correct. Both must agree exactly on evaluation, verified by random walk over 7,663 positions; that invariant caught two real divergences. The evaluation that shipped is tapered PeSTO with Syzygy probing to four pieces. A 768-256-1 NNUE was trained in PyTorch and reverted after scoring 1.7% over 60 games against it.",
         ],
+      },
+      {
+        kind: "image",
+        src: "/work/chess-ladder.jpg",
+        width: 1800,
+        height: 1012,
+        alt: "Rating chart across 108 rated games showing a reverted clock regression and a peak of 1835",
+        caption: "Rating across 108 rated games — 13 builds, one reverted regression",
+        wide: true,
       },
       {
         kind: "list",
@@ -336,19 +394,34 @@ export const projects: Project[] = [
         ],
       },
       {
+        kind: "image",
+        src: "/work/chess-gates.jpg",
+        width: 1800,
+        height: 1012,
+        alt: "Gate results for six candidate changes, only one clearing its confidence interval",
+        caption: "Gate results — one change in six cleared its interval",
+        wide: true,
+      },
+      {
+        kind: "image",
+        src: "/work/chess-round103.jpg",
+        width: 1800,
+        height: 1125,
+        alt: "Round 103 position with the played move and the correct move, and the evaluation gap between them",
+        caption: "Round 103 — a won endgame drawn, reproduced and diagnosed",
+        wide: true,
+      },
+      {
         kind: "specs",
         heading: "Result and engine",
         rows: [
           { label: "Entrants", value: "465" },
           { label: "Placement", value: "199th" },
-          { label: "Peak rating", value: "1835" },
+          { label: "Peak / final", value: "1835 / 1749" },
           { label: "Rated games", value: "108" },
           { label: "Builds shipped", value: "13" },
-          { label: "Build window", value: "9 days" },
           { label: "Search rate", value: "2.7M nodes/s" },
           { label: "Depth reached", value: "12.4 plies" },
-          { label: "Evaluation", value: "Tapered PeSTO" },
-          { label: "NNUE", value: "Trained, unshipped" },
           { label: "Licence", value: "MIT, public" },
         ],
       },
@@ -356,7 +429,7 @@ export const projects: Project[] = [
         kind: "text",
         note: true,
         body: [
-          "The post-mortem is the useful output. A 60-game gate resolves about 35 Elo, and four to six hours per gate meant roughly thirty decisions in nine days, so every evaluation term worth 5-20 Elo was invisible to the process meant to judge it. Meanwhile the measured branching factor was 3.23 against an ideal of 2.0-2.5, and closing that gap is worth about three plies, more than any evaluation term on the table. We spent the week improving the thing we could not measure instead of the thing we could.",
+          "A 60-game gate resolves about 35 Elo and cost four to six hours, so nine days bought roughly thirty decisions, and every evaluation term worth 5-20 Elo was invisible to the process meant to judge it. One change in six cleared its gate. Meanwhile the branching factor sat at 3.23 against an ideal of 2.0-2.5, worth about three plies. We spent the week improving the thing we could not measure instead of the thing we could.",
         ],
       },
     ],
@@ -367,6 +440,7 @@ export const projects: Project[] = [
     summary:
       "A live ADS-B tracker for Vancouver International that draws the airport as a 3D wireframe: runways, taxiways, terminal geometry, coastline and terrain, with aircraft trails and an operations panel that infers the active runway configuration from live traffic.",
     year: "2026",
+    date: "Summer 2026",
     categories: ["Software"],
     role: "Sole contributor",
     stack: ["Next.js", "Three.js", "Python"],
@@ -374,12 +448,16 @@ export const projects: Project[] = [
     cover: {
       kind: "image",
       src: "/work/yvr-tracker-global.jpg",
+      width: 1600,
+      height: 918,
       alt: "Wireframe 3D view of Vancouver International with live aircraft traffic",
     },
     blocks: [
       {
         kind: "image",
         src: "/work/yvr-tracker-global.jpg",
+        width: 1600,
+        height: 918,
         alt: "Global view showing wireframe runways, taxiways and terminal geometry over terrain, with live traffic and the airport operations panel",
         caption:
           "Global view — wireframe runways, taxiways and terminal geometry over DEM terrain, with live traffic, trails, and the Airport Ops panel reporting auto-inferred active runways",
@@ -433,235 +511,12 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "retrieval-claw",
-    title: "Autonomous Mechanical Retrieval Claw",
-    summary:
-      "A sheet-metal claw actuated by a single servo, controlled through an Arduino UNO and a sonar-aided joystick interface, designed to pick up objects at distance under strict time and material constraints.",
-    year: "2026",
-    categories: ["Embedded", "Electronics", "Mechanical"],
-    role: "Software and hardware integration",
-    stack: ["SolidWorks", "Arduino", "C++"],
-    source: { label: "APSC 101" },
-    cover: {
-      kind: "image",
-      src: "/work/claw-top-down.jpg",
-      alt: "Top-down view of the retrieval claw with electronics visible",
-    },
-    blocks: [
-      {
-        kind: "image",
-        src: "/work/claw-top-down.jpg",
-        alt: "Top-down view, claw open, electronics visible",
-        caption: "Top-down — claw open, electronics visible",
-        wide: true,
-      },
-      {
-        kind: "text",
-        heading: "Approach",
-        body: [
-          "The mechanism uses a door-joint linkage driven by a single servo to convert rotational motion into a symmetric jaw closure. Sheet metal was a constraint, and it shaped the structural strategy: folded panels rather than welded brackets, to keep fabrication within the time budget.",
-          "Control logic runs on an Arduino UNO in custom C++, reading ultrasonic (HC-SR04) distance and joystick inputs to drive the servo. My role spanned both firmware and hardware integration, including routing power to the servo without browning out the UNO, which required a separate battery feed.",
-        ],
-      },
-      {
-        kind: "list",
-        heading: "Key design decisions",
-        items: [
-          { term: "Single-servo actuation over dual-motor", detail: "reduces weight, wiring and current draw." },
-          { term: "Door-joint linkage geometry", detail: "tuned across iterations for grip strength against travel." },
-          { term: "Sonar mounted forward of the claw", detail: "proximity feedback before contact." },
-          { term: "Isolated power rail for the servo", detail: "keeps motor noise out of the logic supply." },
-        ],
-      },
-      {
-        kind: "specs",
-        heading: "Technical specification",
-        rows: [
-          { label: "Length", value: "150 mm" },
-          { label: "Width", value: "145 mm" },
-          { label: "Height", value: "96 mm" },
-          { label: "Actuator", value: "Servo motor" },
-          { label: "Controller", value: "Arduino UNO" },
-          { label: "Sensing", value: "HC-SR04 sonar" },
-          { label: "Input", value: "Joystick" },
-          { label: "Material", value: "Sheet metal" },
-          { label: "Team", value: "Team E6, 7 members" },
-        ],
-      },
-      {
-        kind: "image",
-        src: "/work/claw-plan.jpg",
-        alt: "Plan view of the integrated assembly",
-        caption: "Plan view — integrated assembly",
-      },
-      {
-        kind: "image",
-        src: "/work/claw-side.jpg",
-        alt: "Side elevation showing the cantilever extension arm",
-        caption: "Side elevation — cantilever extension arm",
-      },
-      {
-        kind: "image",
-        src: "/work/claw-drawing.jpg",
-        alt: "Engineering drawing with three views and dimensions in millimetres",
-        caption: "Engineering drawing — three views with dimensions (mm)",
-        wide: true,
-      },
-      {
-        kind: "text",
-        note: true,
-        body: [
-          "The biggest lesson was the cost of underestimating integration time. Subsystems — mechanism, firmware, sensing — worked in isolation, but power routing and signal-integrity issues surfaced only at integration. Next iteration: prototype the full electrical loop on a breadboard before committing to the mechanical layout, so structure can be designed around clean wire paths.",
-        ],
-      },
-    ],
-  },
-  {
-    slug: "cardboard-chair",
-    title: "Disaster Relief Cardboard Chair",
-    summary:
-      "A load-bearing chair built from a single 48x48 in sheet of corrugated cardboard with zero adhesives or fasteners, designed for children aged 4 to 6 in disaster relief shelters.",
-    year: "2025",
-    categories: ["Mechanical"],
-    role: "Prototyping and load testing",
-    stack: ["Iterative C-sketching", "Statics"],
-    source: { label: "APSC 100/101" },
-    cover: {
-      kind: "image",
-      src: "/work/cardboard-chair-final.jpg",
-      alt: "Final cardboard chair design, front and rear views with labelled features",
-    },
-    blocks: [
-      {
-        kind: "image",
-        src: "/work/cardboard-chair-final.jpg",
-        alt: "Final design, front and rear views with labelled features",
-        caption:
-          "Final design — front and rear views with labelled features (backrest, seat, concaved base, handle, internal bracing, storage lid)",
-        wide: true,
-      },
-      {
-        kind: "text",
-        heading: "Design process, two iteration cycles",
-        body: [
-          "Round 1 generated six concepts via C-sketching. After screening against the requirements — durability, storage, single-sheet constraint — only one of six passed, a clear signal that the team had under-defined the problem before generating solutions.",
-          "We restarted: re-clarified stakeholder needs (children, parents, relief teams, NGOs), tightened the criteria, then ran a second C-sketching round. Round 2 produced three viable concepts; the top two were prototyped at half-scale and stress-tested. The winning design supported 300 lbs, 50% over the 200 lb target, using less material than the runner-up.",
-        ],
-      },
-      {
-        kind: "text",
-        heading: "My contribution",
-        body: [
-          "Led physical prototyping and load testing: built the half-scale prototypes, ran the stress tests that identified the winning concept, and applied statics calculations to rationalize material distribution and joint placement without adhesives, relying only on slotted tabs, folds, and internal bracing.",
-        ],
-      },
-      {
-        kind: "specs",
-        heading: "Final specification",
-        rows: [
-          { label: "Load capacity", value: "300 lbs" },
-          { label: "Target", value: "200 lbs" },
-          { label: "Overall height", value: "20 in" },
-          { label: "Seat elevation", value: "10 in" },
-          { label: "Seat dimensions", value: "14 x 14 in" },
-          { label: "Base dimensions", value: "12 x 19 in" },
-          { label: "Backrest", value: "16 degrees from vertical" },
-          { label: "Storage", value: "900 cubic in" },
-          { label: "Material used", value: "1632 square in" },
-          { label: "Joinery", value: "Tabs and folds" },
-        ],
-      },
-      {
-        kind: "text",
-        note: true,
-        body: [
-          "Round 1's failure rate was the most valuable feedback of the project: generating solutions before fully scoping the problem produces designs that look promising but collapse under criteria they were never built to meet. Re-iterating from the problem statement, rather than from the failed designs themselves, turned a frustrating cycle into a winning one, and that re-framing is now my first step on any constrained problem.",
-        ],
-      },
-    ],
-  },
-  {
-    slug: "kendoras-box",
-    title: "Kendora's Box",
-    summary:
-      "An adaptive toothpaste dispenser for users with limited hand dexterity. Traditional squeeze tubes require simultaneous fine motor control and grip strength; this replaces the pinch-and-squeeze with a vertical push pad and an incremental-grooved track.",
-    year: "2025",
-    categories: ["Mechanical"],
-    role: "CAD and mechanism design",
-    stack: ["Fusion 360", "PLA 3D print"],
-    source: { label: "APSC 100" },
-    cover: {
-      kind: "image",
-      src: "/work/kendoras-box-operation.jpg",
-      alt: "Three-step operation diagram: unscrew, dock, dispense",
-    },
-    blocks: [
-      {
-        kind: "image",
-        src: "/work/kendoras-box-operation.jpg",
-        alt: "Three-step operation: unscrew, dock, dispense",
-        caption: "Three-step operation: unscrew, dock, dispense. Envelope 26 x 10 x 18.5 cm.",
-        wide: true,
-      },
-      {
-        kind: "text",
-        heading: "Approach",
-        body: [
-          "Progressed from hand sketches to cardboard ergonomic mock-ups to a 3D-printed PLA prototype in Fusion 360. The cardboard models were essential for testing whether a user with limited grip could engage the push pad without slipping, a question CAD alone could not answer.",
-        ],
-      },
-      {
-        kind: "list",
-        heading: "Key mechanical features",
-        items: [
-          {
-            term: "Push pad",
-            detail: "broad surface engaged with palm or forearm rather than fingertips, replacing the precision-pinch motion.",
-          },
-          {
-            term: "Incremental grooves",
-            detail: "vertical ratchet track locking dispensed volume in discrete steps, so partial presses still produce a clean dose.",
-          },
-          {
-            term: "Rotating cap-unscrew slot",
-            detail: "keyed hole lets the user remove the toothpaste cap by rotating the whole device, eliminating the two-handed twist-off.",
-          },
-        ],
-      },
-      {
-        kind: "specs",
-        heading: "Specification",
-        rows: [
-          { label: "Width", value: "26 cm" },
-          { label: "Depth", value: "10 cm" },
-          { label: "Height", value: "18.5 cm" },
-          { label: "Frame", value: "PLA, 3D printed" },
-          { label: "CAD", value: "Fusion 360" },
-          { label: "Team", value: "Team B4" },
-        ],
-      },
-      {
-        kind: "image",
-        src: "/work/kendoras-box-drawing.jpg",
-        alt: "Technical drawing with isometric and detail views",
-        caption: "Technical drawing — isometric and detail views",
-        wide: true,
-      },
-      {
-        kind: "text",
-        note: true,
-        body: [
-          "The cardboard-modelling stage caught an issue no CAD render would have flagged: the original push pad was too narrow, and users with reduced grip naturally rested their hand off-centre, causing the pad to bind. Widening it in CAD was trivial, but only because a physical prototype made the problem visible. Cardboard mock-ups are now a non-optional step for any user-facing mechanism.",
-        ],
-      },
-    ],
-  },
-  {
     slug: "pioneer-daycare",
     title: "Pioneer Daycare",
     summary:
       "End-to-end design, build and deployment of a trilingual website for a bilingual daycare operating in Richmond, BC since 1996, including an admin dashboard explicitly designed for a non-technical elderly operator.",
-    year: "2025",
+    year: "2026",
+    date: "May 2026",
     categories: ["Software"],
     role: "Solo developer, freelance",
     stack: ["Next.js 15", "TypeScript", "Supabase"],
@@ -669,12 +524,16 @@ export const projects: Project[] = [
     cover: {
       kind: "image",
       src: "/work/pioneer-daycare-home.jpg",
+      width: 1600,
+      height: 1000,
       alt: "Pioneer Daycare production homepage",
     },
     blocks: [
       {
         kind: "image",
         src: "/work/pioneer-daycare-home.jpg",
+        width: 1600,
+        height: 1000,
         alt: "Production homepage with custom design and runtime language switcher",
         caption: "Production homepage — custom design, GSAP scroll animations, runtime i18n switcher",
         wide: true,
@@ -740,6 +599,7 @@ export const projects: Project[] = [
     summary:
       "An interactive 3D decision-support tool for a rainwater harvesting system design project, combining real historical rain data with hydraulic flow modelling, cost analysis, GHG emissions and reliability scoring, all recalculated in real time.",
     year: "2026",
+    date: "Mar-Apr 2026",
     categories: ["Software"],
     role: "Sole contributor",
     stack: ["Three.js", "Vanilla JS"],
@@ -751,12 +611,16 @@ export const projects: Project[] = [
     cover: {
       kind: "image",
       src: "/work/rwh-simulator-interface.jpg",
+      width: 1600,
+      height: 1000,
       alt: "Simulator interface with 3D terrain, configuration panel and results",
     },
     blocks: [
       {
         kind: "image",
         src: "/work/rwh-simulator-interface.jpg",
+        width: 1600,
+        height: 1000,
         alt: "Main interface: Three.js terrain rendered from CSV elevation data, configuration panel, real-time weighted performance score",
         caption:
           "Main interface — Three.js terrain rendered from CSV elevation data, configuration panel (left), real-time weighted performance score with radar profile (right)",
@@ -803,6 +667,252 @@ export const projects: Project[] = [
         note: true,
         body: [
           "Rendering custom terrain from CSV in Three.js was the technical challenge; the harder one was information design, making a multi-variable simulation legible without overwhelming the user. The data matrix isn't a feature, it's a requirement: if students can't see the model, they can't trust it.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "retrieval-claw",
+    title: "Autonomous Mechanical Retrieval Claw",
+    summary:
+      "A sheet-metal claw actuated by a single servo, controlled through an Arduino UNO and a sonar-aided joystick interface, designed to pick up objects at distance under strict time and material constraints.",
+    year: "2026",
+    date: "Feb 2026",
+    categories: ["Embedded", "Electronics", "Mechanical"],
+    role: "Software and hardware integration",
+    stack: ["SolidWorks", "Arduino", "C++"],
+    source: { label: "APSC 101" },
+    cover: {
+      kind: "image",
+      src: "/work/claw-top-down.jpg",
+      width: 1080,
+      height: 797,
+      alt: "Top-down view of the retrieval claw with electronics visible",
+    },
+    blocks: [
+      {
+        kind: "image",
+        src: "/work/claw-top-down.jpg",
+        width: 1080,
+        height: 797,
+        alt: "Top-down view, claw open, electronics visible",
+        caption: "Top-down — claw open, electronics visible",
+        wide: true,
+      },
+      {
+        kind: "text",
+        heading: "Approach",
+        body: [
+          "The mechanism uses a door-joint linkage driven by a single servo to convert rotational motion into a symmetric jaw closure. Sheet metal was a constraint, and it shaped the structural strategy: folded panels rather than welded brackets, to keep fabrication within the time budget.",
+          "Control logic runs on an Arduino UNO in custom C++, reading ultrasonic (HC-SR04) distance and joystick inputs to drive the servo. My role spanned both firmware and hardware integration, including routing power to the servo without browning out the UNO, which required a separate battery feed.",
+        ],
+      },
+      {
+        kind: "list",
+        heading: "Key design decisions",
+        items: [
+          { term: "Single-servo actuation over dual-motor", detail: "reduces weight, wiring and current draw." },
+          { term: "Door-joint linkage geometry", detail: "tuned across iterations for grip strength against travel." },
+          { term: "Sonar mounted forward of the claw", detail: "proximity feedback before contact." },
+          { term: "Isolated power rail for the servo", detail: "keeps motor noise out of the logic supply." },
+        ],
+      },
+      {
+        kind: "specs",
+        heading: "Technical specification",
+        rows: [
+          { label: "Length", value: "150 mm" },
+          { label: "Width", value: "145 mm" },
+          { label: "Height", value: "96 mm" },
+          { label: "Actuator", value: "Servo motor" },
+          { label: "Controller", value: "Arduino UNO" },
+          { label: "Sensing", value: "HC-SR04 sonar" },
+          { label: "Input", value: "Joystick" },
+          { label: "Material", value: "Sheet metal" },
+          { label: "Team", value: "Team E6, 7 members" },
+        ],
+      },
+      {
+        kind: "image",
+        src: "/work/claw-plan.jpg",
+        width: 1080,
+        height: 1161,
+        alt: "Plan view of the integrated assembly",
+        caption: "Plan view — integrated assembly",
+      },
+      {
+        kind: "image",
+        src: "/work/claw-side.jpg",
+        width: 1080,
+        height: 820,
+        alt: "Side elevation showing the cantilever extension arm",
+        caption: "Side elevation — cantilever extension arm",
+      },
+      {
+        kind: "image",
+        src: "/work/claw-drawing.jpg",
+        width: 1080,
+        height: 985,
+        alt: "Engineering drawing with three views and dimensions in millimetres",
+        caption: "Engineering drawing — three views with dimensions (mm)",
+        wide: true,
+      },
+      {
+        kind: "text",
+        note: true,
+        body: [
+          "The biggest lesson was the cost of underestimating integration time. Subsystems — mechanism, firmware, sensing — worked in isolation, but power routing and signal-integrity issues surfaced only at integration. Next iteration: prototype the full electrical loop on a breadboard before committing to the mechanical layout, so structure can be designed around clean wire paths.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "cardboard-chair",
+    title: "Disaster Relief Cardboard Chair",
+    summary:
+      "A load-bearing chair built from a single 48x48 in sheet of corrugated cardboard with zero adhesives or fasteners, designed for children aged 4 to 6 in disaster relief shelters.",
+    year: "2025",
+    categories: ["Mechanical"],
+    role: "Prototyping and load testing",
+    stack: ["Iterative C-sketching", "Statics"],
+    source: { label: "APSC 100/101" },
+    cover: {
+      kind: "image",
+      src: "/work/cardboard-chair-final.jpg",
+      width: 1600,
+      height: 630,
+      alt: "Final cardboard chair design, front and rear views with labelled features",
+    },
+    blocks: [
+      {
+        kind: "image",
+        src: "/work/cardboard-chair-final.jpg",
+        width: 1600,
+        height: 630,
+        alt: "Final design, front and rear views with labelled features",
+        caption:
+          "Final design — front and rear views with labelled features (backrest, seat, concaved base, handle, internal bracing, storage lid)",
+        wide: true,
+      },
+      {
+        kind: "text",
+        heading: "Design process, two iteration cycles",
+        body: [
+          "Round 1 generated six concepts via C-sketching. After screening against the requirements — durability, storage, single-sheet constraint — only one of six passed, a clear signal that the team had under-defined the problem before generating solutions.",
+          "We restarted: re-clarified stakeholder needs (children, parents, relief teams, NGOs), tightened the criteria, then ran a second C-sketching round. Round 2 produced three viable concepts; the top two were prototyped at half-scale and stress-tested. The winning design supported 300 lbs, 50% over the 200 lb target, using less material than the runner-up.",
+        ],
+      },
+      {
+        kind: "text",
+        heading: "My contribution",
+        body: [
+          "Led physical prototyping and load testing: built the half-scale prototypes, ran the stress tests that identified the winning concept, and applied statics calculations to rationalize material distribution and joint placement without adhesives, relying only on slotted tabs, folds, and internal bracing.",
+        ],
+      },
+      {
+        kind: "specs",
+        heading: "Final specification",
+        rows: [
+          { label: "Load capacity", value: "300 lbs" },
+          { label: "Target", value: "200 lbs" },
+          { label: "Overall height", value: "20 in" },
+          { label: "Seat elevation", value: "10 in" },
+          { label: "Seat dimensions", value: "14 x 14 in" },
+          { label: "Base dimensions", value: "12 x 19 in" },
+          { label: "Backrest", value: "16 degrees from vertical" },
+          { label: "Storage", value: "900 cubic in" },
+          { label: "Material used", value: "1632 square in" },
+          { label: "Joinery", value: "Tabs and folds" },
+        ],
+      },
+      {
+        kind: "text",
+        note: true,
+        body: [
+          "Round 1's failure rate was the most valuable feedback of the project: generating solutions before fully scoping the problem produces designs that look promising but collapse under criteria they were never built to meet. Re-iterating from the problem statement, rather than from the failed designs themselves, turned a frustrating cycle into a winning one, and that re-framing is now my first step on any constrained problem.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "kendoras-box",
+    title: "Kendora's Box",
+    summary:
+      "An adaptive toothpaste dispenser for users with limited hand dexterity. Traditional squeeze tubes require simultaneous fine motor control and grip strength; this replaces the pinch-and-squeeze with a vertical push pad and an incremental-grooved track.",
+    year: "2025",
+    date: "Nov 2025",
+    categories: ["Mechanical"],
+    role: "CAD and mechanism design",
+    stack: ["Fusion 360", "PLA 3D print"],
+    source: { label: "APSC 100" },
+    cover: {
+      kind: "image",
+      src: "/work/kendoras-box-operation.jpg",
+      width: 1600,
+      height: 902,
+      alt: "Three-step operation diagram: unscrew, dock, dispense",
+    },
+    blocks: [
+      {
+        kind: "image",
+        src: "/work/kendoras-box-operation.jpg",
+        width: 1600,
+        height: 902,
+        alt: "Three-step operation: unscrew, dock, dispense",
+        caption: "Three-step operation: unscrew, dock, dispense. Envelope 26 x 10 x 18.5 cm.",
+        wide: true,
+      },
+      {
+        kind: "text",
+        heading: "Approach",
+        body: [
+          "Progressed from hand sketches to cardboard ergonomic mock-ups to a 3D-printed PLA prototype in Fusion 360. The cardboard models were essential for testing whether a user with limited grip could engage the push pad without slipping, a question CAD alone could not answer.",
+        ],
+      },
+      {
+        kind: "list",
+        heading: "Key mechanical features",
+        items: [
+          {
+            term: "Push pad",
+            detail: "broad surface engaged with palm or forearm rather than fingertips, replacing the precision-pinch motion.",
+          },
+          {
+            term: "Incremental grooves",
+            detail: "vertical ratchet track locking dispensed volume in discrete steps, so partial presses still produce a clean dose.",
+          },
+          {
+            term: "Rotating cap-unscrew slot",
+            detail: "keyed hole lets the user remove the toothpaste cap by rotating the whole device, eliminating the two-handed twist-off.",
+          },
+        ],
+      },
+      {
+        kind: "specs",
+        heading: "Specification",
+        rows: [
+          { label: "Width", value: "26 cm" },
+          { label: "Depth", value: "10 cm" },
+          { label: "Height", value: "18.5 cm" },
+          { label: "Frame", value: "PLA, 3D printed" },
+          { label: "CAD", value: "Fusion 360" },
+          { label: "Team", value: "Team B4" },
+        ],
+      },
+      {
+        kind: "image",
+        src: "/work/kendoras-box-drawing.jpg",
+        width: 1600,
+        height: 925,
+        alt: "Technical drawing with isometric and detail views",
+        caption: "Technical drawing — isometric and detail views",
+        wide: true,
+      },
+      {
+        kind: "text",
+        note: true,
+        body: [
+          "The cardboard-modelling stage caught an issue no CAD render would have flagged: the original push pad was too narrow, and users with reduced grip naturally rested their hand off-centre, causing the pad to bind. Widening it in CAD was trivial, but only because a physical prototype made the problem visible. Cardboard mock-ups are now a non-optional step for any user-facing mechanism.",
         ],
       },
     ],
