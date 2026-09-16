@@ -2,56 +2,30 @@
  * The entire content layer.
  *
  * Replacing the placeholders below is the only edit needed to publish real
- * work: nothing else in the app hardcodes a project. Drop images and .glb files
- * into /public and reference them with a leading slash.
+ * work: nothing else in the app hardcodes a project. Drop images into /public
+ * and reference them with a leading slash.
  *
- * Media kinds:
- *   image  a still from /public or a remote URL configured in next.config.ts
- *   video  a self-hosted mp4/webm, muted and looping
- *   embed  any iframe: Spline, Sketchfab, YouTube, Onshape, a live deployment
- *   model  a .glb rendered in-page by <model-viewer>
- *
- * Any project whose blocks contain an `embed` or `model` also gets a
- * chromeless full-screen route at /work/<slug>/preview.
+ * Only `image` media is supported for now. Video, iframe embeds (Spline,
+ * Sketchfab, a live deployment) and in-page .glb models were built and then
+ * removed in the commit after 689e6ea; restore them from there when needed
+ * rather than rewriting them.
  */
 
 export type Discipline = "Software" | "Hardware" | "Mechanical" | "3D Design";
 
 export type ImageBlock = {
   kind: "image";
+  /** Path under /public, or a remote URL allowed in next.config.ts. */
   src: string;
   alt: string;
   caption?: string;
+  /** Span the full content column instead of the prose measure. */
   wide?: boolean;
 };
-export type VideoBlock = {
-  kind: "video";
-  src: string;
-  poster?: string;
-  caption?: string;
-  wide?: boolean;
-};
-export type EmbedBlock = {
-  kind: "embed";
-  src: string;
-  title: string;
-  /** width / height. Defaults to 16/10. */
-  ratio?: number;
-  caption?: string;
-  wide?: boolean;
-};
-export type ModelBlock = {
-  kind: "model";
-  src: string;
-  alt: string;
-  poster?: string;
-  caption?: string;
-  wide?: boolean;
-};
+
 export type TextBlock = { kind: "text"; heading?: string; body: string[] };
 
-export type MediaBlock = ImageBlock | VideoBlock | EmbedBlock | ModelBlock;
-export type Block = TextBlock | MediaBlock;
+export type Block = TextBlock | ImageBlock;
 
 export type Project = {
   slug: string;
@@ -61,8 +35,8 @@ export type Project = {
   discipline: Discipline;
   role?: string;
   stack?: string[];
-  /** Tile media for the index. Omit for a typographic tile. */
-  cover?: MediaBlock;
+  /** Tile image for the index. Omit for a typographic tile. */
+  cover?: ImageBlock;
   links?: { label: string; href: string }[];
   blocks: Block[];
   /** Marks unfinished entries so an unpopulated site never reads as shipped. */
@@ -89,7 +63,7 @@ export const projects: Project[] = [
         heading: "Context",
         body: [
           "What the problem was, who it was for, and the constraint that made the obvious approach fail.",
-          "Keep it to two short paragraphs. The media carries the rest.",
+          "Keep it to two short paragraphs. The images carry the rest.",
         ],
       },
       { kind: "image", src: "", alt: "Placeholder", caption: "Drop a photo in /public", wide: true },
@@ -98,40 +72,27 @@ export const projects: Project[] = [
   {
     slug: "placeholder-3d",
     title: "3D Environment",
-    summary: "A project whose point is the geometry. Rendered live, not screenshotted.",
+    summary: "A project whose point is the geometry. Renders and exploded views.",
     year: "2026",
     discipline: "3D Design",
     role: "Modelling, rendering",
-    stack: ["Fusion 360", "Blender", "glTF"],
+    stack: ["Fusion 360", "Blender"],
     draft: true,
     blocks: [
-      {
-        kind: "text",
-        body: ["Demonstrates an in-page .glb. Swap the src for your own export."],
-      },
-      {
-        kind: "model",
-        // A stable public sample so the viewer is verifiable before real assets land.
-        src: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
-        alt: "Sample model rendered with model-viewer",
-        caption: "Drag to orbit. Replace with your own .glb export.",
-        wide: true,
-      },
+      { kind: "text", body: ["Placeholder."] },
+      { kind: "image", src: "", alt: "Placeholder", wide: true },
     ],
   },
   {
     slug: "placeholder-software",
     title: "Software Project",
-    summary: "Something with a live deployment worth linking rather than describing.",
+    summary: "Something with a live deployment worth linking.",
     year: "2025",
     discipline: "Software",
     role: "Full stack",
     stack: ["TypeScript", "Next.js", "Postgres"],
     draft: true,
-    blocks: [
-      { kind: "text", body: ["Use an embed block to inline a live deployment or a Spline scene."] },
-      { kind: "embed", src: "", title: "Live deployment", ratio: 16 / 10, wide: true },
-    ],
+    blocks: [{ kind: "text", body: ["Placeholder."] }],
   },
   {
     slug: "placeholder-mechanical",
@@ -166,11 +127,4 @@ export const projects: Project[] = [
 
 export function getProject(slug: string) {
   return projects.find((p) => p.slug === slug);
-}
-
-/** The block a /preview route renders full-bleed, if the project has one. */
-export function getPreviewBlock(project: Project): EmbedBlock | ModelBlock | undefined {
-  return project.blocks.find(
-    (b): b is EmbedBlock | ModelBlock => b.kind === "embed" || b.kind === "model",
-  );
 }

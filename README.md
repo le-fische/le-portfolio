@@ -14,7 +14,6 @@ becomes a normal scrolling page. The deck is a set piece, not navigation.
 - **Lenis** for smooth scrolling, driven from the GSAP ticker so ScrollTrigger
   never reads a stale scroll position
 - **Tailwind CSS v4** with the design system defined as `@theme` tokens
-- **`<model-viewer>`** loaded on demand for in-page `.glb` rendering
 
 ## Structure
 
@@ -23,12 +22,11 @@ src/
   app/
     page.tsx                  intro + work index + about + contact
     work/[slug]/page.tsx      case study
-    work/[slug]/preview/      chromeless full-screen 3D preview
     globals.css               the entire design system
   components/
     Intro.tsx                 the pinned sequence
     TuckBox.tsx  PlayingCard.tsx
-    ProjectMedia.tsx          image | video | embed | model
+    ProjectMedia.tsx          image block rendering
     Reveal.tsx                the one shared scroll reveal
   content/projects.ts         the entire content layer
 ```
@@ -38,17 +36,9 @@ src/
 Everything lives in `src/content/projects.ts`. Nothing else hardcodes a
 project. Add an entry, drop assets in `/public`, remove `draft: true`.
 
-Media block kinds:
-
-| kind    | use                                                        |
-| ------- | ---------------------------------------------------------- |
-| `image` | a still, rendered through `next/image`                      |
-| `video` | a self-hosted mp4/webm, muted and looping                   |
-| `embed` | any iframe: Spline, Sketchfab, YouTube, a live deployment   |
-| `model` | a `.glb`, orbit-controlled in the page                      |
-
-Any project containing an `embed` or `model` block automatically gets a
-full-screen route at `/work/<slug>/preview`, linked from its case study.
+Blocks are either `text` or `image`. Video, iframe embeds (Spline, Sketchfab,
+a live deployment) and in-page `.glb` models were built and then removed in the
+commit after `689e6ea`; restore them from there rather than rewriting them.
 
 Remote images need their host added to `images.remotePatterns` in
 `next.config.ts`. Local files under `/public` need nothing.
