@@ -119,7 +119,7 @@ export default async function ProjectPage({ params }: Params) {
             <div className="flex flex-wrap items-center gap-3">
               <SuitPips categories={project.categories} className="text-base" />
               <span className="label text-muted">{project.categories.join(" / ")}</span>
-              <span className="label text-muted">/ {project.year}</span>
+              <span className="label text-muted">/ {project.date ?? project.year}</span>
               {project.draft && <span className="label text-muted">/ Placeholder</span>}
             </div>
             <h1 className="text-h1 mt-6 max-w-3xl font-medium text-balance">{project.title}</h1>

@@ -23,7 +23,9 @@ type QuickTo = ReturnType<typeof gsap.quickTo>;
  * independent of how flex resolves each row's height. */
 const RAIL = "left-[calc(2.5rem+1rem+0.875rem)] md:left-[calc(3.5rem+2rem+0.875rem)]";
 
-const PREVIEW_H = 240; // px, must match the w-44 aspect-[3/4] card below
+// Must match the card below: w-[19rem] plus the image and text block it holds.
+const PREVIEW_W = 304;
+const PREVIEW_H = 330;
 
 /**
  * The project index as a dealt hand: one row per project on a single spine,
@@ -70,7 +72,7 @@ export function WorkTimeline({ projects }: { projects: Project[] }) {
   const track = (e: React.MouseEvent) => {
     // Clamped so the card never runs off the top or bottom of the viewport.
     const y = gsap.utils.clamp(12, window.innerHeight - PREVIEW_H - 12, e.clientY - PREVIEW_H / 2);
-    const x = gsap.utils.clamp(12, window.innerWidth - 188, e.clientX + 28);
+    const x = gsap.utils.clamp(12, window.innerWidth - PREVIEW_W - 12, e.clientX + 28);
     xTo.current?.(x);
     yTo.current?.(y);
   };
@@ -140,36 +142,55 @@ export function WorkTimeline({ projects }: { projects: Project[] }) {
         })}
       </ol>
 
-      {/* Floating preview. Positioned by GSAP, never by React state. */}
+      {/* Floating preview: a small overview card, not a cropped thumbnail.
+          Images are contained rather than cover-cropped, because these are CAD
+          renders and charts where the edges carry the content. Positioned by
+          GSAP, never by React state. */}
       <div
         ref={previewRef}
         aria-hidden
-        className="cursor-preview pointer-events-none fixed top-0 left-0 z-40 w-44"
+        className="cursor-preview pointer-events-none fixed top-0 left-0 z-40 w-[19rem]"
       >
         <div
           className={cn(
-            "relative aspect-[3/4] overflow-hidden rounded-xl border border-line bg-canvas shadow-[0_24px_60px_-20px_rgba(20,18,15,0.45)] transition-all duration-300 ease-[var(--ease-out-expo)]",
-            active ? "scale-100 opacity-100" : "scale-90 opacity-0",
+            "overflow-hidden rounded-xl border border-line bg-canvas shadow-[0_24px_60px_-20px_rgba(20,18,15,0.45)] transition-all duration-300 ease-[var(--ease-out-expo)]",
+            active ? "scale-100 opacity-100" : "scale-95 opacity-0",
           )}
         >
-          {active?.cover?.src ? (
-            <Image src={active.cover.src} alt="" fill sizes="176px" className="object-cover" />
-          ) : (
-            /* No cover yet: a card face rather than an empty box. */
-            <div className="flex h-full w-full flex-col items-center justify-center gap-3 p-4">
-              <span
-                className={cn(
-                  "text-4xl leading-none",
-                  lead && isRedCategory(lead) ? "text-accent" : "text-ink",
-                )}
-              >
-                {lead ? CATEGORY_SUIT[lead] : ""}
-              </span>
-              <span className="label text-center text-muted">
+          <div className="relative aspect-[16/10] w-full border-b border-line bg-ink/[0.03]">
+            {active?.cover?.src ? (
+              <Image
+                src={active.cover.src}
+                alt=""
+                fill
+                sizes="304px"
+                className="object-contain p-2"
+              />
+            ) : (
+              /* No cover: a card face rather than an empty box. */
+              <div className="flex h-full w-full items-center justify-center">
+                <span
+                  className={cn(
+                    "text-4xl leading-none",
+                    lead && isRedCategory(lead) ? "text-accent" : "text-ink",
+                  )}
+                >
+                  {lead ? CATEGORY_SUIT[lead] : ""}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className="p-4">
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="label truncate text-muted">
                 {active?.categories.join(" / ")}
               </span>
+              <span className="label shrink-0 text-muted">{active?.year}</span>
             </div>
-          )}
+            <p className="text-h3 mt-2 font-medium">{active?.title}</p>
+            <p className="mt-2 line-clamp-3 text-small text-muted">{active?.summary}</p>
+          </div>
         </div>
       </div>
     </div>
