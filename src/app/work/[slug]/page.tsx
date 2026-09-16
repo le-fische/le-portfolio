@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ProjectMedia } from "@/components/ProjectMedia";
 import { Reveal } from "@/components/Reveal";
 import { SiteHeader } from "@/components/SiteHeader";
-import { getPreviewBlock, getProject, projects, type Block } from "@/content/projects";
+import { getProject, projects, type Block } from "@/content/projects";
 import { cn } from "@/lib/cn";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -52,7 +52,6 @@ export default async function ProjectPage({ params }: Params) {
   const project = getProject(slug);
   if (!project) notFound();
 
-  const preview = getPreviewBlock(project);
   const position = projects.findIndex((p) => p.slug === project.slug);
   const next = projects[(position + 1) % projects.length];
 
@@ -101,19 +100,6 @@ export default async function ProjectPage({ params }: Params) {
                   </dd>
                 </div>
               ))}
-              {preview && (
-                <div>
-                  <dt className="label text-muted">Interactive</dt>
-                  <dd className="mt-2 text-small">
-                    <Link
-                      href={`/work/${project.slug}/preview`}
-                      className="underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
-                    >
-                      Full screen
-                    </Link>
-                  </dd>
-                </div>
-              )}
             </dl>
           </Reveal>
         </header>
