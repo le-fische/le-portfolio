@@ -128,7 +128,8 @@ export default function Home() {
                 </div>
                 <div className="border-t border-line pt-4">
                   <dt className="label text-muted">Team</dt>
-                  <dd className="mt-2 text-body">UBC AeroDesign, payload systems</dd>
+                  <dd className="mt-2 text-body">UBC AeroDesign, Advanced Class Fuselage Team
+                  </dd>
                 </div>
                 <div className="border-t border-line pt-4">
                   <dt className="label text-muted">Works on</dt>
