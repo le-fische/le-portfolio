@@ -106,9 +106,9 @@ export const projects: Project[] = [
       "A test rig that lands a robotic payload at a random position and orientation on an 8x8 ft designated landing zone, so capture and release can be rehearsed without tying up the competition aircraft.",
     year: "2026",
     date: "Summer 2026",
-    categories: ["Mechanical", "Embedded"],
-    role: "Concept evaluation, structural and kinematic analysis",
-    stack: ["SolidWorks", "Hand calculation"],
+    categories: ["Mechanical", "Embedded", "Electronics"],
+    role: "Concept evaluation, structural and kinematic analysis, motor control and wiring",
+    stack: ["SolidWorks", "Hand calculation", "NEMA 17 steppers", "Stepper drivers"],
     source: { label: "UBC AeroDesign" },
     cover: {
       kind: "image",
@@ -176,7 +176,7 @@ export const projects: Project[] = [
           { label: "Printed parts", value: "17" },
           { label: "Concepts scored", value: "5" },
           { label: "Winning score", value: "7.85 / 10" },
-          { label: "Status", value: "Design documented, build pending" },
+          { label: "Status", value: "Design complete, build awaiting budget" },
         ],
       },
       {
