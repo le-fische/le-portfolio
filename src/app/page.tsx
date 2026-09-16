@@ -5,8 +5,14 @@ import { Preloader } from "@/components/Preloader";
 import { Reveal } from "@/components/Reveal";
 import { SiteHeader } from "@/components/SiteHeader";
 import { WorkTimeline } from "@/components/WorkTimeline";
-import { projects, projectsByYear } from "@/content/projects";
-import { cn } from "@/lib/cn";
+import { JokerHat } from "@/components/PlayingCard";
+import {
+  CATEGORIES,
+  CATEGORY_SUIT,
+  isRedCategory,
+  projects,
+  projectsByYear,
+} from "@/content/projects";
 
 const CONTACT = [
   { label: "Email", href: "mailto:hzguo117@gmail.com", value: "hzguo117@gmail.com" },
@@ -15,26 +21,39 @@ const CONTACT = [
 ];
 
 /**
- * Section headers each take one suit. Across the page they complete a set:
- * spades for work, hearts for about, diamonds for contact, clubs in the footer.
+ * All four suits, in the order the aces are dealt. Work is the whole deck, so
+ * it takes the whole deck rather than borrowing one category's suit.
+ */
+function FullSuit() {
+  return (
+    <span aria-hidden className="inline-flex items-center gap-1 text-sm leading-none">
+      {CATEGORIES.map((category) => (
+        <span key={category} className={isRedCategory(category) ? "text-accent" : "text-ink"}>
+          {CATEGORY_SUIT[category]}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+/**
+ * Section headers each take an icon. The four suits belong to the four
+ * categories, so About and Contact take the jokers instead: no glyph on this
+ * page means two different things.
  */
 function SectionLabel({
-  suit,
-  red = false,
+  icon,
   children,
   trailing,
 }: {
-  suit: string;
-  red?: boolean;
+  icon: React.ReactNode;
   children: React.ReactNode;
   trailing?: React.ReactNode;
 }) {
   return (
     <div className="flex items-baseline justify-between gap-6 border-b border-line pb-4">
-      <h2 className="flex items-baseline gap-3">
-        <span aria-hidden className={cn("text-sm leading-none", red ? "text-accent" : "text-ink")}>
-          {suit}
-        </span>
+      <h2 className="flex items-center gap-3">
+        {icon}
         <span className="label text-muted">{children}</span>
       </h2>
       {trailing}
@@ -56,7 +75,7 @@ export default function Home() {
         <section id="work" className="scroll-mt-20 px-gutter py-section">
           <Reveal>
             <SectionLabel
-              suit="&#9824;"
+              icon={<FullSuit />}
               trailing={
                 <span className="label text-muted">
                   {String(projects.length).padStart(2, "0")}
@@ -75,7 +94,7 @@ export default function Home() {
         {/* ---------------------------------------------------------------- */}
         <section id="about" className="scroll-mt-20 px-gutter py-section">
           <Reveal>
-            <SectionLabel suit="&#9829;" red>
+            <SectionLabel icon={<JokerHat className="h-4 w-4 text-accent" />}>
               About
             </SectionLabel>
           </Reveal>
@@ -125,7 +144,7 @@ export default function Home() {
         {/* ---------------------------------------------------------------- */}
         <section id="contact" className="scroll-mt-20 px-gutter py-section">
           <Reveal>
-            <SectionLabel suit="&#9830;" red>
+            <SectionLabel icon={<JokerHat className="h-4 w-4 text-ink" />}>
               Contact
             </SectionLabel>
           </Reveal>
@@ -159,10 +178,8 @@ export default function Home() {
       </main>
 
       <footer className="flex flex-col gap-3 border-t border-line px-gutter py-8 sm:flex-row sm:items-center sm:justify-between">
-        <span className="flex items-baseline gap-3">
-          <span aria-hidden className="text-sm leading-none text-ink">
-            &#9827;
-          </span>
+        <span className="flex items-center gap-3">
+          <FullSuit />
           <span className="label text-muted">Houze Guo &copy; {new Date().getFullYear()}</span>
         </span>
         <Link href="#intro" className="label text-muted transition-colors hover:text-ink">

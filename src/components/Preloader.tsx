@@ -27,6 +27,15 @@ export function Preloader() {
     if (!root) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    // A hash in the URL means they asked for a section, not the front door.
+    // Playing the curtain would block scrolling for three seconds and then hand
+    // them the intro instead of the thing they linked to.
+    if (window.location.hash) {
+      root.style.display = "none";
+      hasPlayed = true;
+      return;
+    }
+
     const lenis = getLenis();
     lenis?.stop();
 

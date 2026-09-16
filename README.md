@@ -36,6 +36,23 @@ src/
 Everything lives in `src/content/projects.ts`. Nothing else hardcodes a
 project. Add an entry, drop assets in `/public`, remove `draft: true`.
 
+Each project carries one or more `categories`. There are four, each owning a
+suit, and those same four are dealt as the aces in the intro:
+
+| Category    | Suit |
+| ----------- | ---- |
+| Software    | club |
+| Embedded    | spade |
+| Electronics | diamond |
+| Mechanical  | heart |
+
+The four suits are spoken for, which is why About and Contact are marked with
+jokers instead: no glyph on the page means two different things.
+
+`source` is where the project came from, and `href` is optional, so a repo
+(`{ label: "GitHub", href: "..." }`), a team (`{ label: "UBC AeroDesign" }`) and
+a course (`{ label: "APSC 101" }`) are all valid.
+
 Blocks are either `text` or `image`. Video, iframe embeds (Spline, Sketchfab,
 a live deployment) and in-page `.glb` models were built and then removed in the
 commit after `689e6ea`; restore them from there rather than rewriting them.

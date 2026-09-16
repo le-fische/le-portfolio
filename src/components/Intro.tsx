@@ -6,30 +6,38 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
 
+import { CATEGORIES, type Category } from "@/content/projects";
 import { PlayingCard, type Suit } from "./PlayingCard";
 import { TuckBox } from "./TuckBox";
 import { scrollToId } from "./SmoothScroller";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-/**
- * The fan is the table of contents. Left to right it deals the two page
- * sections and the four work disciplines, and each suit matches the pip the
- * timeline uses for that discipline.
- */
-const CARDS: { suit: Suit; label: string }[] = [
-  { suit: "joker-red", label: "About" },
-  { suit: "club", label: "Software" },
-  { suit: "spade", label: "Hardware" },
-  { suit: "diamond", label: "Mechanical" },
-  { suit: "heart", label: "3D Design" },
-  { suit: "joker-black", label: "Contact" },
-];
+/** The suit each category is dealt as. Mirrors CATEGORY_SUIT in the content layer. */
+const ACE_SUIT: Record<Category, Suit> = {
+  Software: "club",
+  Embedded: "spade",
+  Electronics: "diamond",
+  Mechanical: "heart",
+};
 
-/** Fan geometry: an arc of six cards, tight on phones, wide on desktop. */
+/**
+ * Four aces, four categories. Each suit is the same one the timeline and the
+ * case studies use for that category, so the fan states the taxonomy before
+ * anyone has to read a label twice. The jokers left the deck; they mark About
+ * and Contact instead, where no suit is spoken for.
+ */
+const CARDS: { suit: Suit; label: Category }[] = CATEGORIES.map((label) => ({
+  suit: ACE_SUIT[label],
+  label,
+}));
+
+/** Fan geometry: an arc of cards, tight on phones, wide on desktop. Spacing is
+ *  per-gap rather than a fixed total, so the fan stays evenly dealt if the
+ *  number of categories ever changes. */
 function fanLayout(index: number, count: number, isDesktop: boolean) {
   const t = count === 1 ? 0 : index / (count - 1) - 0.5; // -0.5 .. 0.5
-  const spread = isDesktop ? 960 : 210;
+  const spread = (isDesktop ? 200 : 46) * (count - 1);
   const lift = isDesktop ? 110 : 60;
   const tilt = isDesktop ? 24 : 34;
   return {
