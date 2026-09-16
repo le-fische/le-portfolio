@@ -2,10 +2,11 @@ import Link from "next/link";
 
 import { Intro } from "@/components/Intro";
 import { Preloader } from "@/components/Preloader";
-import { ProjectCard } from "@/components/ProjectCard";
 import { Reveal } from "@/components/Reveal";
 import { SiteHeader } from "@/components/SiteHeader";
-import { projects } from "@/content/projects";
+import { WorkTimeline } from "@/components/WorkTimeline";
+import { projects, projectsByYear } from "@/content/projects";
+import { cn } from "@/lib/cn";
 
 const CONTACT = [
   { label: "Email", href: "mailto:hzguo117@gmail.com", value: "hzguo117@gmail.com" },
@@ -13,7 +14,37 @@ const CONTACT = [
   { label: "LinkedIn", href: "https://linkedin.com/in/houzeguo", value: "houzeguo" },
 ];
 
+/**
+ * Section headers each take one suit. Across the page they complete a set:
+ * spades for work, hearts for about, diamonds for contact, clubs in the footer.
+ */
+function SectionLabel({
+  suit,
+  red = false,
+  children,
+  trailing,
+}: {
+  suit: string;
+  red?: boolean;
+  children: React.ReactNode;
+  trailing?: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-baseline justify-between gap-6 border-b border-line pb-4">
+      <h2 className="flex items-baseline gap-3">
+        <span aria-hidden className={cn("text-sm leading-none", red ? "text-accent" : "text-ink")}>
+          {suit}
+        </span>
+        <span className="label text-muted">{children}</span>
+      </h2>
+      {trailing}
+    </div>
+  );
+}
+
 export default function Home() {
+  const timeline = projectsByYear();
+
   return (
     <>
       <Preloader />
@@ -24,27 +55,29 @@ export default function Home() {
         {/* ---------------------------------------------------------------- */}
         <section id="work" className="scroll-mt-20 px-gutter py-section">
           <Reveal>
-            <div className="flex items-baseline justify-between border-b border-line pb-4">
-              <h2 className="label text-muted">Selected Work</h2>
-              <span className="label text-muted">{String(projects.length).padStart(2, "0")}</span>
-            </div>
+            <SectionLabel
+              suit="&#9824;"
+              trailing={
+                <span className="label text-muted">
+                  {String(projects.length).padStart(2, "0")}
+                </span>
+              }
+            >
+              Selected Work
+            </SectionLabel>
           </Reveal>
 
-          <div className="mt-14 grid grid-cols-1 gap-x-gutter gap-y-16 md:grid-cols-2">
-            {projects.map((project, i) => (
-              <Reveal key={project.slug} delay={(i % 2) * 0.08}>
-                <ProjectCard project={project} index={i} />
-              </Reveal>
-            ))}
+          <div className="mt-10">
+            <WorkTimeline projects={timeline} />
           </div>
         </section>
 
         {/* ---------------------------------------------------------------- */}
         <section id="about" className="scroll-mt-20 px-gutter py-section">
           <Reveal>
-            <div className="border-b border-line pb-4">
-              <h2 className="label text-muted">About</h2>
-            </div>
+            <SectionLabel suit="&#9829;" red>
+              About
+            </SectionLabel>
           </Reveal>
 
           <div className="mt-14 grid grid-cols-1 gap-x-gutter gap-y-12 lg:grid-cols-12">
@@ -92,9 +125,9 @@ export default function Home() {
         {/* ---------------------------------------------------------------- */}
         <section id="contact" className="scroll-mt-20 px-gutter py-section">
           <Reveal>
-            <div className="border-b border-line pb-4">
-              <h2 className="label text-muted">Contact</h2>
-            </div>
+            <SectionLabel suit="&#9830;" red>
+              Contact
+            </SectionLabel>
           </Reveal>
 
           <Reveal>
@@ -104,7 +137,7 @@ export default function Home() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <ul className="mt-16 max-w-2xl">
+            <ul className="mt-16 max-w-3xl">
               {CONTACT.map((item) => (
                 <li key={item.label} className="border-t border-line last:border-b">
                   <a
@@ -126,7 +159,12 @@ export default function Home() {
       </main>
 
       <footer className="flex flex-col gap-3 border-t border-line px-gutter py-8 sm:flex-row sm:items-center sm:justify-between">
-        <span className="label text-muted">Houze Guo &copy; {new Date().getFullYear()}</span>
+        <span className="flex items-baseline gap-3">
+          <span aria-hidden className="text-sm leading-none text-ink">
+            &#9827;
+          </span>
+          <span className="label text-muted">Houze Guo &copy; {new Date().getFullYear()}</span>
+        </span>
         <Link href="#intro" className="label text-muted transition-colors hover:text-ink">
           Back to top
         </Link>

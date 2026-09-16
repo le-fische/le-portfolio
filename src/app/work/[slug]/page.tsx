@@ -5,7 +5,13 @@ import { notFound } from "next/navigation";
 import { ProjectMedia } from "@/components/ProjectMedia";
 import { Reveal } from "@/components/Reveal";
 import { SiteHeader } from "@/components/SiteHeader";
-import { getProject, projects, type Block } from "@/content/projects";
+import {
+  DISCIPLINE_SUIT,
+  getProject,
+  isRedSuit,
+  projects,
+  type Block,
+} from "@/content/projects";
 import { cn } from "@/lib/cn";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -63,7 +69,16 @@ export default async function ProjectPage({ params }: Params) {
         <header className="mx-auto max-w-5xl">
           <Reveal>
             <div className="flex items-center gap-3">
-              <span className="label text-accent">{project.discipline}</span>
+              <span
+                aria-hidden
+                className={cn(
+                  "text-base leading-none",
+                  isRedSuit(project.discipline) ? "text-accent" : "text-ink",
+                )}
+              >
+                {DISCIPLINE_SUIT[project.discipline]}
+              </span>
+              <span className="label text-muted">{project.discipline}</span>
               <span className="label text-muted">/ {project.year}</span>
               {project.draft && <span className="label text-muted">/ Placeholder</span>}
             </div>

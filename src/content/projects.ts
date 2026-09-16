@@ -45,6 +45,24 @@ export type Project = {
 
 export const DISCIPLINES: Discipline[] = ["Software", "Hardware", "Mechanical", "3D Design"];
 
+/** Each discipline owns a suit. Red suits render in the accent, black in ink. */
+export const DISCIPLINE_SUIT = {
+  Software: "\u2663",
+  Hardware: "\u2660",
+  Mechanical: "\u2666",
+  "3D Design": "\u2665",
+} as const satisfies Record<Discipline, string>;
+
+export function isRedSuit(discipline: Discipline) {
+  const suit = DISCIPLINE_SUIT[discipline];
+  return suit === "\u2665" || suit === "\u2666";
+}
+
+/** Newest first, which is the order the timeline deals them. */
+export function projectsByYear() {
+  return [...projects].sort((a, b) => Number(b.year) - Number(a.year));
+}
+
 export const projects: Project[] = [
   {
     slug: "placeholder-embedded",

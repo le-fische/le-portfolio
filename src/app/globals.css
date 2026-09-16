@@ -104,6 +104,14 @@
   }
 }
 
+/* The cursor-following project preview is a pointer affordance. On touch there
+   is no cursor to follow, so it is removed rather than branched on in JS. */
+@media (hover: none), (pointer: coarse) {
+  .cursor-preview {
+    display: none;
+  }
+}
+
 /* Reduced-motion visitors never see the curtain at all. Handled in CSS rather
    than JS so there is no frame where it is painted and then removed. */
 @media (prefers-reduced-motion: reduce) {

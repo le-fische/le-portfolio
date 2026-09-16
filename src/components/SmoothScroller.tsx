@@ -24,6 +24,18 @@ export function scrollToId(id: string) {
 
 export function SmoothScroller() {
   useEffect(() => {
+    // Browsers restore scroll position on reload, which drops you into the
+    // middle of the pinned intro with its timeline half-applied. Take over and
+    // start at the top, unless the URL names a target to honour.
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    const toTop = () => {
+      if (!window.location.hash) window.scrollTo(0, 0);
+    };
+    toTop();
+    // The browser's own restore can land after this effect, so re-assert once
+    // the document is fully loaded.
+    if (document.readyState !== "complete") window.addEventListener("load", toTop, { once: true });
+
     // Smooth scrolling is a motion effect. Skip it entirely when the OS says to.
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -41,6 +53,7 @@ export function SmoothScroller() {
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      window.removeEventListener("load", toTop);
       gsap.ticker.remove(raf);
       instance.destroy();
       lenis = null;

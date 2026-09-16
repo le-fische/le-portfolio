@@ -9,7 +9,7 @@ const PIP: Record<Exclude<Suit, "joker-red" | "joker-black">, string> = {
   club: "♣",
 };
 
-const JokerHat = ({ className }: { className?: string }) => (
+export const JokerHat = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 100 100" className={className} fill="currentColor" aria-hidden>
     <path d="M 38 72 C 15 70, 10 50, 18 42 C 25 35, 35 48, 38 60 Z" />
     <circle cx="16" cy="38" r="5" />
@@ -22,10 +22,19 @@ const JokerHat = ({ className }: { className?: string }) => (
 );
 
 /**
- * Stage dressing for the intro sequence. Deliberately non-interactive: the deck
- * is a set piece, not navigation, so it carries no click affordance.
+ * Stage dressing for the intro. Non-interactive by design: the deck states what
+ * the site contains, it is not the navigation. `label` is what makes the fan
+ * mean something — each card names a section of the page below it.
  */
-export function PlayingCard({ suit, className }: { suit: Suit; className?: string }) {
+export function PlayingCard({
+  suit,
+  label,
+  className,
+}: {
+  suit: Suit;
+  label?: string;
+  className?: string;
+}) {
   const isJoker = suit === "joker-red" || suit === "joker-black";
   const isRed = suit === "heart" || suit === "diamond" || suit === "joker-red";
   const tone = isRed ? "text-accent" : "text-ink";
@@ -43,18 +52,21 @@ export function PlayingCard({ suit, className }: { suit: Suit; className?: strin
         <div className="pointer-events-none absolute inset-2 rounded-lg border border-line/70" />
 
         {isJoker ? (
-          <div className="relative flex h-full w-full flex-col items-center justify-center">
-            <JokerHat className={cn("mb-3 h-16 w-16", tone)} />
-            <span className={cn("label", tone)}>Joker</span>
+          <div className="relative flex h-full w-full flex-col items-center justify-center gap-3">
+            <JokerHat className={cn("h-16 w-16", tone)} />
+            <span className={cn("label", tone)}>{label ?? "Joker"}</span>
           </div>
         ) : (
           <>
             <div className={cn("font-display text-2xl leading-none", tone)}>
               A<span className="mt-0.5 block text-xl">{PIP[suit]}</span>
             </div>
-            <div className={cn("self-center text-5xl leading-none opacity-90", tone)}>
-              {PIP[suit]}
+
+            <div className="flex flex-col items-center gap-3">
+              <span className={cn("text-5xl leading-none opacity-90", tone)}>{PIP[suit]}</span>
+              {label && <span className="label text-center text-muted">{label}</span>}
             </div>
+
             <div className={cn("rotate-180 self-end font-display text-2xl leading-none", tone)}>
               A<span className="mt-0.5 block text-xl">{PIP[suit]}</span>
             </div>

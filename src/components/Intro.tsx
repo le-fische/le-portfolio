@@ -12,7 +12,19 @@ import { scrollToId } from "./SmoothScroller";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-const CARDS: Suit[] = ["spade", "heart", "joker-red", "joker-black", "diamond", "club"];
+/**
+ * The fan is the table of contents. Left to right it deals the two page
+ * sections and the four work disciplines, and each suit matches the pip the
+ * timeline uses for that discipline.
+ */
+const CARDS: { suit: Suit; label: string }[] = [
+  { suit: "joker-red", label: "About" },
+  { suit: "club", label: "Software" },
+  { suit: "spade", label: "Hardware" },
+  { suit: "diamond", label: "Mechanical" },
+  { suit: "heart", label: "3D Design" },
+  { suit: "joker-black", label: "Contact" },
+];
 
 /** Fan geometry: an arc of six cards, tight on phones, wide on desktop. */
 function fanLayout(index: number, count: number, isDesktop: boolean) {
@@ -45,6 +57,7 @@ export function Intro() {
       const nameChars = splitName.chars ?? [];
       const blurbWords = splitBlurb.words ?? [];
       const quoteChars = splitQuote.chars ?? [];
+      const pieces = [...nameChars, ...blurbWords];
       const cards = gsap.utils.toArray<HTMLElement>(".deck-card");
 
       const mm = gsap.matchMedia();
@@ -64,25 +77,38 @@ export function Intro() {
 
           // --- Reduced motion: a plain stacked hero, no pin, no 3D. ---------
           if (reduced) {
-            gsap.set([...nameChars, ...blurbWords, ...quoteChars], {
-              clearProps: "all",
-              opacity: 1,
-            });
+            gsap.set([...pieces, ...quoteChars], { clearProps: "all", opacity: 1 });
+            gsap.set(".intro-name-layer, .intro-cue-wrap", { opacity: 1 });
+            gsap.set(".intro-name-layer", { position: "relative" });
             gsap.set(".intro-quote-layer", { position: "relative", opacity: 1, marginTop: "4rem" });
-            gsap.set(".intro-name-layer", { position: "relative", opacity: 1 });
-            gsap.set(".intro-deck, .intro-skip, .intro-cue", { display: "none" });
+            gsap.set(".intro-deck, .intro-skip, .intro-cue-wrap", { display: "none" });
             gsap.set(stageRef.current, { height: "auto", paddingTop: "8rem", paddingBottom: "8rem" });
             return;
           }
 
+          /* PROPERTY OWNERSHIP, and the reason this looks over-engineered.
+           *
+           * The entrance tweens run on wall-clock time; the shatter runs on
+           * scroll. If both write the same property to the same element, the
+           * scrubbed timeline wins: it re-renders on every tick, and the
+           * staggered sub-tween whose offset is exactly 0 gets its recorded
+           * start value written back forever. That is what made a single
+           * character of the name invisible at rest while every other one,
+           * whose sub-tween starts after time 0, animated normally.
+           *
+           * So the two never share a property:
+           *   entrance  -> opacity on the LAYER, yPercent on the pieces
+           *   shatter   -> opacity, x, y and rotation on the PIECES
+           */
+
           // --- Resting state -------------------------------------------------
-          gsap.set([...nameChars, ...blurbWords], { opacity: 0, y: 24 });
+          gsap.set(".intro-name-layer, .intro-cue-wrap", { opacity: 0 });
+          gsap.set(pieces, { yPercent: 60 });
           gsap.set(quoteChars, { opacity: 0, rotationX: -90 });
           // NOTE: opacity is deliberately never tweened on .tuckbox. An element
-          // with opacity < 1 has its used `transform-style` forced to flat, which
-          // collapses the box's 3D context mid-fade and paints the mirrored back
-          // face over the front. Visibility is not a grouping property, so the
-          // box appears and leaves on visibility plus motion instead.
+          // with opacity < 1 has its used `transform-style` forced to flat,
+          // which collapses the box's 3D context and paints the mirrored back
+          // face over the front. Visibility is not a grouping property.
           gsap.set(".tuckbox", {
             rotationX: 12,
             rotationY: -18,
@@ -107,16 +133,21 @@ export function Intro() {
             opacity: 0,
           });
 
-          // --- Entrance (time-based, not scroll-bound) -----------------------
-          gsap.to([...nameChars, ...blurbWords], {
+          // --- Entrance (wall-clock, not scroll-bound) -----------------------
+          gsap.to(".intro-name-layer", {
             opacity: 1,
-            y: 0,
+            duration: 0.7,
+            ease: "power2.out",
+            delay: 0.3,
+          });
+          gsap.to(pieces, {
+            yPercent: 0,
             stagger: 0.015,
             duration: 0.9,
             ease: "power3.out",
-            delay: 0.35,
+            delay: 0.3,
           });
-          gsap.to(".intro-cue", { opacity: 1, duration: 0.8, delay: 1.4 });
+          gsap.to(".intro-cue-wrap", { opacity: 1, duration: 0.8, delay: 1.4 });
 
           // The skip affordance retires once the sequence is behind you.
           gsap.to(".intro-skip", {
@@ -158,10 +189,11 @@ export function Intro() {
             ease: "power2.inOut" as const,
           });
 
-          // 1. The name shatters.
-          tl.to([...nameChars, ...blurbWords], {
+          // 1. The name shatters. Random stagger so it disintegrates rather
+          //    than wiping left to right and briefly reading as a typo.
+          tl.to(pieces, {
             ...scatter(isDesktop ? 900 : 420),
-            stagger: 0.004,
+            stagger: { each: 0.004, from: "random" },
             duration: 1.1,
           }, 0);
           tl.to(".intro-cue", { opacity: 0, duration: 0.3 }, 0);
@@ -184,12 +216,7 @@ export function Intro() {
 
           // 4. The box drops into the scene.
           tl.set(".tuckbox", { visibility: "visible" }, 3.6);
-          tl.to(".tuckbox", {
-            scale: 1,
-            y: 0,
-            duration: 1.0,
-            ease: "power3.out",
-          }, 3.6);
+          tl.to(".tuckbox", { scale: 1, y: 0, duration: 1.0, ease: "power3.out" }, 3.6);
 
           // 5. It turns to face the camera dead-on, back toward us.
           tl.to(".tuckbox", {
@@ -200,11 +227,7 @@ export function Intro() {
           }, 4.6);
 
           // 6. The seal splits and the lid folds open.
-          tl.to(".tuckbox-lid", {
-            rotationX: -182,
-            duration: 0.7,
-            ease: "power2.inOut",
-          }, 5.5);
+          tl.to(".tuckbox-lid", { rotationX: -182, duration: 0.7, ease: "power2.inOut" }, 5.5);
 
           // 7. Cards become visible only once the box is square to the camera,
           //    so they never peek out during the rotation.
@@ -243,18 +266,20 @@ export function Intro() {
             ease: "power3.inOut",
           }, 7.0);
 
-          // 11. Hold the fan for a beat and a half. This is the payoff of the
-          //     whole sequence, so it gets roughly half a screen of scroll to
-          //     sit still in rather than passing by.
+          // 11. Hold the fan. This is the payoff, and the only moment the six
+          //     labels are readable, so it gets roughly half a screen of scroll.
           tl.to({}, { duration: 1.6 }, 8.0);
 
-          // 12. Hand off: the fan rises and clears exactly as the pin releases,
-          //     so the work index scrolls straight up behind it.
+          // 12. Hand off: the hand is dealt downward, toward the table. The
+          //     timeline rows below land from above on the same easing and a
+          //     matching stagger, so the deal reads as one continuous motion
+          //     across the pin boundary.
           tl.to(cards, {
-            y: (i) => fanLayout(i, CARDS.length, isDesktop).y - 260,
+            y: (i) => fanLayout(i, CARDS.length, isDesktop).y + (isDesktop ? 520 : 380),
+            rotationZ: (i) => fanLayout(i, CARDS.length, isDesktop).rotation * 0.35,
             opacity: 0,
-            scale: 0.92,
-            stagger: 0.02,
+            scale: 0.86,
+            stagger: { each: 0.05, from: "center" },
             duration: 1.0,
             ease: "power2.in",
           }, 9.6);
@@ -279,8 +304,8 @@ export function Intro() {
       >
         {/* Layer 1: identity */}
         <div className="intro-name-layer absolute inset-0 flex flex-col items-center justify-center px-gutter text-center">
-          <h1 ref={nameRef} className="text-display font-medium">
-            Houze Guo
+          <h1 className="text-display font-medium">
+            <span ref={nameRef}>Houze Guo</span>
           </h1>
           <p ref={blurbRef} className="text-lead mt-8 max-w-xl text-balance text-muted">
             Computer engineering student at UBC. I build things that sit between hardware and
@@ -298,16 +323,20 @@ export function Intro() {
         {/* Layer 3: the deck */}
         <div className="intro-deck pointer-events-none absolute inset-0 flex items-center justify-center [perspective:1800px]">
           <div className="relative flex items-center justify-center [transform-style:preserve-3d]">
-            {CARDS.map((suit, i) => (
-              <div key={`${suit}-${i}`} className="deck-card absolute [transform-style:preserve-3d]">
-                <PlayingCard suit={suit} />
+            {CARDS.map((card) => (
+              <div key={card.label} className="deck-card absolute [transform-style:preserve-3d]">
+                <PlayingCard suit={card.suit} label={card.label} />
               </div>
             ))}
             <TuckBox />
           </div>
         </div>
 
-        <span className="intro-cue label absolute bottom-10 text-muted opacity-0">Scroll</span>
+        {/* Nested so the entrance owns the wrapper's opacity and the scrubbed
+            timeline owns the inner one. Same rule as the name layer. */}
+        <span className="intro-cue-wrap absolute bottom-10 opacity-0">
+          <span className="intro-cue label text-muted">Scroll</span>
+        </span>
       </div>
 
       <button
