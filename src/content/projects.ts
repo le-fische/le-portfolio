@@ -5,13 +5,31 @@
  * work: nothing else in the app hardcodes a project. Drop images into /public
  * and reference them with a leading slash.
  *
- * Only `image` media is supported for now. Video, iframe embeds (Spline,
- * Sketchfab, a live deployment) and in-page .glb models were built and then
- * removed in the commit after 689e6ea; restore them from there when needed
- * rather than rewriting them.
+ * Only `image` media is supported. Video, iframe embeds (Spline, Sketchfab, a
+ * live deployment) and in-page .glb models were built and then removed in the
+ * commit after 689e6ea; restore them from there rather than rewriting them.
  */
 
-export type Discipline = "Software" | "Hardware" | "Mechanical" | "3D Design";
+export type Category = "Software" | "Embedded" | "Electronics" | "Mechanical";
+
+/**
+ * Each category owns a suit, and the four suits are spoken for. That is why
+ * About and Contact are marked with jokers instead: a glyph means exactly one
+ * thing across the whole page.
+ */
+export const CATEGORY_SUIT = {
+  Software: "♣",
+  Embedded: "♠",
+  Electronics: "♦",
+  Mechanical: "♥",
+} as const satisfies Record<Category, string>;
+
+/** The order the aces are dealt, and the order categories read in anywhere. */
+export const CATEGORIES: Category[] = ["Software", "Embedded", "Electronics", "Mechanical"];
+
+export function isRedCategory(category: Category) {
+  return category === "Electronics" || category === "Mechanical";
+}
 
 export type ImageBlock = {
   kind: "image";
@@ -32,36 +50,21 @@ export type Project = {
   title: string;
   summary: string;
   year: string;
-  discipline: Discipline;
+  /** One or more. The first is the primary and leads everywhere it is listed. */
+  categories: Category[];
   role?: string;
   stack?: string[];
-  /** Tile image for the index. Omit for a typographic tile. */
+  /**
+   * Where the project came from: a repo, a team, or a course. `href` is
+   * optional, so "UBC AeroDesign" and "APSC 101" are as valid as a GitHub link.
+   */
+  source?: { label: string; href?: string };
+  /** Tile image for the hover preview. Omit for a typographic card face. */
   cover?: ImageBlock;
-  links?: { label: string; href: string }[];
   blocks: Block[];
   /** Marks unfinished entries so an unpopulated site never reads as shipped. */
   draft?: boolean;
 };
-
-export const DISCIPLINES: Discipline[] = ["Software", "Hardware", "Mechanical", "3D Design"];
-
-/** Each discipline owns a suit. Red suits render in the accent, black in ink. */
-export const DISCIPLINE_SUIT = {
-  Software: "\u2663",
-  Hardware: "\u2660",
-  Mechanical: "\u2666",
-  "3D Design": "\u2665",
-} as const satisfies Record<Discipline, string>;
-
-export function isRedSuit(discipline: Discipline) {
-  const suit = DISCIPLINE_SUIT[discipline];
-  return suit === "\u2665" || suit === "\u2666";
-}
-
-/** Newest first, which is the order the timeline deals them. */
-export function projectsByYear() {
-  return [...projects].sort((a, b) => Number(b.year) - Number(a.year));
-}
 
 export const projects: Project[] = [
   {
@@ -70,11 +73,11 @@ export const projects: Project[] = [
     summary:
       "One sentence on what it does and why it was hard. Replace this entry with real work.",
     year: "2026",
-    discipline: "Hardware",
+    categories: ["Embedded", "Electronics"],
     role: "Firmware, PCB",
     stack: ["C", "STM32", "KiCad"],
+    source: { label: "GitHub", href: "https://github.com/le-fische" },
     draft: true,
-    links: [{ label: "Source", href: "https://github.com/le-fische" }],
     blocks: [
       {
         kind: "text",
@@ -88,13 +91,14 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "placeholder-3d",
-    title: "3D Environment",
-    summary: "A project whose point is the geometry. Renders and exploded views.",
+    slug: "placeholder-fuselage",
+    title: "Fuselage Project",
+    summary: "A team build with a physical result. Show the CAD and the finished part.",
     year: "2026",
-    discipline: "3D Design",
-    role: "Modelling, rendering",
-    stack: ["Fusion 360", "Blender"],
+    categories: ["Mechanical"],
+    role: "Design, layup",
+    stack: ["Onshape", "Composites"],
+    source: { label: "UBC AeroDesign" },
     draft: true,
     blocks: [
       { kind: "text", body: ["Placeholder."] },
@@ -106,20 +110,22 @@ export const projects: Project[] = [
     title: "Software Project",
     summary: "Something with a live deployment worth linking.",
     year: "2025",
-    discipline: "Software",
+    categories: ["Software"],
     role: "Full stack",
     stack: ["TypeScript", "Next.js", "Postgres"],
+    source: { label: "GitHub", href: "https://github.com/le-fische" },
     draft: true,
     blocks: [{ kind: "text", body: ["Placeholder."] }],
   },
   {
-    slug: "placeholder-mechanical",
-    title: "Mechanical Project",
-    summary: "A build with a physical result. Show the CAD and the finished part.",
+    slug: "placeholder-coursework",
+    title: "Coursework Project",
+    summary: "A course deliverable worth showing. Name the course as the source.",
     year: "2025",
-    discipline: "Mechanical",
-    role: "Design, fabrication",
-    stack: ["Onshape", "CNC", "Composites"],
+    categories: ["Mechanical", "Software"],
+    role: "Team of four",
+    stack: ["SolidWorks", "Python"],
+    source: { label: "APSC 101" },
     draft: true,
     blocks: [{ kind: "text", body: ["Placeholder."] }],
   },
@@ -128,7 +134,7 @@ export const projects: Project[] = [
     title: "Project Five",
     summary: "Placeholder.",
     year: "2025",
-    discipline: "Software",
+    categories: ["Electronics"],
     draft: true,
     blocks: [{ kind: "text", body: ["Placeholder."] }],
   },
@@ -137,7 +143,7 @@ export const projects: Project[] = [
     title: "Project Six",
     summary: "Placeholder.",
     year: "2024",
-    discipline: "Hardware",
+    categories: ["Software", "Embedded"],
     draft: true,
     blocks: [{ kind: "text", body: ["Placeholder."] }],
   },
@@ -145,4 +151,9 @@ export const projects: Project[] = [
 
 export function getProject(slug: string) {
   return projects.find((p) => p.slug === slug);
+}
+
+/** Newest first, which is the order the timeline deals them. */
+export function projectsByYear() {
+  return [...projects].sort((a, b) => Number(b.year) - Number(a.year));
 }

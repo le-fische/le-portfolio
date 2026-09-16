@@ -24,25 +24,34 @@ export function scrollToId(id: string) {
 
 export function SmoothScroller() {
   useEffect(() => {
-    // Browsers restore scroll position on reload, which drops you into the
-    // middle of the pinned intro with its timeline half-applied. Take over and
-    // start at the top, unless the URL names a target to honour.
+    // Take scroll position out of the browser's hands; see `settle` below.
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-    const toTop = () => {
-      if (!window.location.hash) window.scrollTo(0, 0);
-    };
-    toTop();
-    // The browser's own restore can land after this effect, so re-assert once
-    // the document is fully loaded.
-    if (document.readyState !== "complete") window.addEventListener("load", toTop, { once: true });
 
     // Smooth scrolling is a motion effect. Skip it entirely when the OS says to.
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     // `anchors` makes Lenis intercept in-page hash links. Without it every
     // href="#work" does a native jump that Lenis immediately fights.
-    const instance = new Lenis({ lerp: 0.1, smoothWheel: true, anchors: true });
+    const instance = reduced ? null : new Lenis({ lerp: 0.1, smoothWheel: true, anchors: true });
     lenis = instance;
+
+    /* The pinned intro adds roughly three and a half screens of spacer once it
+     * initialises. The browser resolves both its restored scroll position and
+     * its hash scroll before that happens, so either one lands in the wrong
+     * place: a plain reload drops you into the middle of the intro, and a hard
+     * load of /#about never reaches About. Re-anchor after layout settles. */
+    const settle = () => {
+      ScrollTrigger.refresh();
+      const hash = window.location.hash;
+      const target = hash ? document.querySelector<HTMLElement>(hash) : null;
+      if (!target) window.scrollTo(0, 0);
+      else if (instance) instance.scrollTo(target, { immediate: true });
+      else target.scrollIntoView();
+    };
+    settle();
+    window.addEventListener("load", settle, { once: true });
+
+    if (!instance) return () => window.removeEventListener("load", settle);
 
     // Drive Lenis from the GSAP ticker and feed its scroll events back into
     // ScrollTrigger. Without this the pinned timelines read stale scroll
@@ -53,7 +62,7 @@ export function SmoothScroller() {
     gsap.ticker.lagSmoothing(0);
 
     return () => {
-      window.removeEventListener("load", toTop);
+      window.removeEventListener("load", settle);
       gsap.ticker.remove(raf);
       instance.destroy();
       lenis = null;

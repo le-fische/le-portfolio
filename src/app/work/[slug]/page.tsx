@@ -5,13 +5,8 @@ import { notFound } from "next/navigation";
 import { ProjectMedia } from "@/components/ProjectMedia";
 import { Reveal } from "@/components/Reveal";
 import { SiteHeader } from "@/components/SiteHeader";
-import {
-  DISCIPLINE_SUIT,
-  getProject,
-  isRedSuit,
-  projects,
-  type Block,
-} from "@/content/projects";
+import { SuitPips } from "@/components/SuitPips";
+import { getProject, projects, type Block } from "@/content/projects";
 import { cn } from "@/lib/cn";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -65,20 +60,26 @@ export default async function ProjectPage({ params }: Params) {
     <>
       <SiteHeader alwaysVisible />
 
-      <main className="px-gutter pt-40 pb-section">
-        <header className="mx-auto max-w-5xl">
+      <main className="px-gutter pt-32 pb-section">
+        <div className="mx-auto max-w-5xl">
+          {/* Same pill as the intro's skip control, so "get me out of here"
+              looks the same wherever it appears. */}
+          <Link
+            href="/#work"
+            className="label group inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 text-muted transition-colors hover:border-ink hover:text-ink"
+          >
+            <span aria-hidden className="transition-transform duration-300 group-hover:-translate-x-0.5">
+              &larr;
+            </span>
+            All work
+          </Link>
+        </div>
+
+        <header className="mx-auto mt-12 max-w-5xl">
           <Reveal>
-            <div className="flex items-center gap-3">
-              <span
-                aria-hidden
-                className={cn(
-                  "text-base leading-none",
-                  isRedSuit(project.discipline) ? "text-accent" : "text-ink",
-                )}
-              >
-                {DISCIPLINE_SUIT[project.discipline]}
-              </span>
-              <span className="label text-muted">{project.discipline}</span>
+            <div className="flex flex-wrap items-center gap-3">
+              <SuitPips categories={project.categories} className="text-base" />
+              <span className="label text-muted">{project.categories.join(" / ")}</span>
               <span className="label text-muted">/ {project.year}</span>
               {project.draft && <span className="label text-muted">/ Placeholder</span>}
             </div>
@@ -87,7 +88,7 @@ export default async function ProjectPage({ params }: Params) {
           </Reveal>
 
           <Reveal delay={0.08}>
-            <dl className="mt-14 grid grid-cols-2 gap-x-gutter gap-y-8 border-t border-line pt-8 md:grid-cols-4">
+            <dl className="mt-14 grid grid-cols-2 gap-x-gutter gap-y-8 border-t border-line pt-8 md:grid-cols-3">
               {project.role && (
                 <div>
                   <dt className="label text-muted">Role</dt>
@@ -100,21 +101,26 @@ export default async function ProjectPage({ params }: Params) {
                   <dd className="mt-2 text-small">{project.stack.join(", ")}</dd>
                 </div>
               )}
-              {project.links?.map((link) => (
-                <div key={link.href}>
-                  <dt className="label text-muted">{link.label}</dt>
+              {project.source && (
+                <div>
+                  <dt className="label text-muted">Source</dt>
                   <dd className="mt-2 text-small">
-                    <a
-                      href={link.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
-                    >
-                      Open
-                    </a>
+                    {/* A repo gets a link; a team or a course is just a name. */}
+                    {project.source.href ? (
+                      <a
+                        href={project.source.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                      >
+                        {project.source.label}
+                      </a>
+                    ) : (
+                      project.source.label
+                    )}
                   </dd>
                 </div>
-              ))}
+              )}
             </dl>
           </Reveal>
         </header>
@@ -131,7 +137,7 @@ export default async function ProjectPage({ params }: Params) {
       <nav className="border-t border-line px-gutter py-10">
         <div className="mx-auto flex max-w-5xl items-baseline justify-between gap-6">
           <Link href="/#work" className="label text-muted transition-colors hover:text-ink">
-            All work
+            &larr; All work
           </Link>
           <Link href={`/work/${next.slug}`} className="group text-right">
             <span className="label block text-muted">Next</span>
