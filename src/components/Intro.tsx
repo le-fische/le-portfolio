@@ -316,8 +316,9 @@ export function Intro() {
             <span ref={nameRef}>Houze Guo</span>
           </h1>
           <p ref={blurbRef} className="text-lead mt-8 max-w-xl text-balance text-muted">
-            Second-year computer engineering at UBC, Advanced Fuselage on AeroDesign. I work the
-            seam between mechanisms, firmware and software, and I do card tricks.
+            Second-year computer engineering at UBC, on the Advanced Class fuselage team at
+            AeroDesign. Most of what I build has a mechanical half and a firmware half. I do card
+            magic too.
           </p>
         </div>
 

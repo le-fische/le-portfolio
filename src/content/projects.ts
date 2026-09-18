@@ -103,7 +103,7 @@ export const projects: Project[] = [
     slug: "payload-test-stand",
     title: "Payload Capture & Release Test Stand",
     summary:
-      "A test rig that lands a robotic payload at a random position and orientation on an 8x8 ft designated landing zone, so capture and release can be rehearsed without tying up the competition aircraft.",
+      "The team needed to rehearse payload capture without tying up the competition aircraft. So I designed a rig that drops a mockup anywhere on an 8x8 ft zone, at any angle.",
     year: "2026",
     date: "Summer 2026",
     categories: ["Mechanical", "Embedded", "Electronics"],
@@ -210,7 +210,7 @@ export const projects: Project[] = [
     slug: "portable-modular-dlz",
     title: "Portable Modular DLZ",
     summary:
-      "A folding, modular 8x8 ft designated landing zone replacing a damaged one-piece coroplast board. Sized to fit a 2 ft storage shelf, deployable by one person in under 90 seconds, repairable one panel at a time.",
+      "Our landing zone was four coroplast boards that a season of use had wrecked. I replaced it with a folding 8x8 ft mat that packs down to 2 ft and comes apart one panel at a time.",
     year: "2026",
     date: "Summer 2026",
     categories: ["Mechanical"],
@@ -330,7 +330,7 @@ export const projects: Project[] = [
     slug: "ai-chessathon",
     title: "AI Chessathon Chess Engine",
     summary:
-      "A chess engine written from scratch in Python over nine days for a 465-entrant competition. Negamax search compiled with Numba to 2.7M nodes/second, a tapered classical evaluation, and thirteen builds each gated on a match against a frozen snapshot. Finished 199th, peak rating 1835.",
+      "Nine days, a 465-entrant field, and a chess engine written from scratch in Python. Numba got the search to 2.7M nodes a second. Finished 199th, peak rating 1835.",
     year: "2026",
     date: "Sept 2026, 9 days",
     categories: ["Software"],
@@ -438,7 +438,7 @@ export const projects: Project[] = [
     slug: "yvr-tracker",
     title: "YVR Tracker",
     summary:
-      "A live ADS-B tracker for Vancouver International that draws the airport as a 3D wireframe: runways, taxiways, terminal geometry, coastline and terrain, with aircraft trails and an operations panel that infers the active runway configuration from live traffic.",
+      "A live map of YVR that draws the airport as a 3D wireframe instead of a photo with icons on top. It reads the traffic and works out which runways are in use.",
     year: "2026",
     date: "Summer 2026",
     categories: ["Software"],
@@ -514,7 +514,7 @@ export const projects: Project[] = [
     slug: "pioneer-daycare",
     title: "Pioneer Daycare",
     summary:
-      "End-to-end design, build and deployment of a trilingual website for a bilingual daycare operating in Richmond, BC since 1996, including an admin dashboard explicitly designed for a non-technical elderly operator.",
+      "A Richmond daycare running since 1996 needed a real website. I built it in three languages, with an admin panel the owner can use without being walked through it.",
     year: "2026",
     date: "May 2026",
     categories: ["Software"],
@@ -597,7 +597,7 @@ export const projects: Project[] = [
     slug: "rwh-simulator",
     title: "3D Rainwater Harvesting Simulator",
     summary:
-      "An interactive 3D decision-support tool for a rainwater harvesting system design project, combining real historical rain data with hydraulic flow modelling, cost analysis, GHG emissions and reliability scoring, all recalculated in real time.",
+      "A design tool for a rainwater harvesting project. Drag components onto 3D terrain and every cost, flow and emissions figure recalculates as you move the sliders.",
     year: "2026",
     date: "Mar-Apr 2026",
     categories: ["Software"],
@@ -675,7 +675,7 @@ export const projects: Project[] = [
     slug: "retrieval-claw",
     title: "Autonomous Mechanical Retrieval Claw",
     summary:
-      "A sheet-metal claw actuated by a single servo, controlled through an Arduino UNO and a sonar-aided joystick interface, designed to pick up objects at distance under strict time and material constraints.",
+      "A sheet-metal claw that picks things up at arm's length. One servo drives the jaws; an Arduino reads sonar and a joystick to aim it.",
     year: "2026",
     date: "Feb 2026",
     categories: ["Embedded", "Electronics", "Mechanical"],
@@ -770,7 +770,7 @@ export const projects: Project[] = [
     slug: "cardboard-chair",
     title: "Disaster Relief Cardboard Chair",
     summary:
-      "A load-bearing chair built from a single 48x48 in sheet of corrugated cardboard with zero adhesives or fasteners, designed for children aged 4 to 6 in disaster relief shelters.",
+      "One 48x48 in sheet of cardboard, no glue and no fasteners, turned into a chair for four to six year olds in relief shelters. It held 300 lbs against a 200 lb target.",
     year: "2025",
     categories: ["Mechanical"],
     role: "Prototyping and load testing",
@@ -838,7 +838,7 @@ export const projects: Project[] = [
     slug: "kendoras-box",
     title: "Kendora's Box",
     summary:
-      "An adaptive toothpaste dispenser for users with limited hand dexterity. Traditional squeeze tubes require simultaneous fine motor control and grip strength; this replaces the pinch-and-squeeze with a vertical push pad and an incremental-grooved track.",
+      "Squeezing a toothpaste tube needs grip strength and fine motor control at once. This one takes a push from the palm instead, and ratchets the dose out in steps.",
     year: "2025",
     date: "Nov 2025",
     categories: ["Mechanical"],
