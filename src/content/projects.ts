@@ -339,10 +339,10 @@ export const projects: Project[] = [
     source: { label: "GitHub", href: "https://github.com/le-fische/AIChessathon" },
     cover: {
       kind: "image",
-      src: "/work/chess-ladder.jpg",
+      src: "/work/chess-dashboard.jpg",
       width: 1800,
-      height: 1012,
-      alt: "Rating across 108 rated games, peaking at 1835",
+      height: 1182,
+      alt: "Official competition dashboard showing rank 191 of 465 and a peak rating of 1835",
     },
     blocks: [
       {
@@ -361,15 +361,6 @@ export const projects: Project[] = [
           "Search is negamax with alpha-beta over bitboards, with iterative deepening, transposition tables, MVV-LVA ordering with killer and history heuristics, quiescence, null-move pruning, late move reductions, aspiration windows and check extensions.",
           "Two implementations run that same algorithm: a Numba-JIT path that plays, and a pure-Python fallback that serves as the readable definition of correct. Both must agree exactly on evaluation, verified by random walk over 7,663 positions; that invariant caught two real divergences. The evaluation that shipped is tapered PeSTO with Syzygy probing to four pieces. A 768-256-1 NNUE was trained in PyTorch and reverted after scoring 1.7% over 60 games against it.",
         ],
-      },
-      {
-        kind: "image",
-        src: "/work/chess-ladder.jpg",
-        width: 1800,
-        height: 1012,
-        alt: "Rating chart across 108 rated games showing a reverted clock regression and a peak of 1835",
-        caption: "Rating across 108 rated games — 13 builds, one reverted regression",
-        wide: true,
       },
       {
         kind: "list",
