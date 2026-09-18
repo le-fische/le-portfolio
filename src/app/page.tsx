@@ -106,16 +106,16 @@ export default function Home() {
               </p>
               <div className="mt-8 max-w-xl space-y-5 text-body text-muted">
                 <p>
-                  Across these nine projects, one pattern repeats. Round 1 of the cardboard chair.
-                  The off-centre push pad on Kendora&rsquo;s Box. The power-rail brownout on the
-                  claw. The silent Supabase RLS failures on Pioneer. The H-channel that joined two
-                  DLZ panels perfectly and left a ridge across the landing surface. The chess results
-                  that were wrong by a factor of 3.7 until the measurement protocol caught them.
+                  The same thing keeps happening. Round 1 of the cardboard chair gave us six
+                  concepts and one survived screening, which really meant we had scoped the problem
+                  badly. The H-channel joined two DLZ panels perfectly and left a ridge across the
+                  landing surface. The chess engine&rsquo;s numbers were off by a factor of 3.7
+                  until the measurement protocol caught it.
                 </p>
                 <p>
-                  Each was a problem theory couldn&rsquo;t surface and only a built, tested artifact
-                  could. I value design teams that build early, test honestly, and treat iteration
-                  count as a measure of learning rather than wasted effort.
+                  None of that was visible on paper. It showed up because something got built and
+                  then tested. That is most of what I look for in a team: build early, measure
+                  honestly, and treat the iteration count as learning rather than waste.
                 </p>
               </div>
             </Reveal>
@@ -160,7 +160,7 @@ export default function Home() {
 
           <Reveal>
             <p className="mt-14 max-w-3xl text-h1 font-medium text-balance">
-              Building something at the edge of hardware and software? Tell me about it.
+              I&rsquo;m looking for a Winter 2027 co-op. Email is the fastest way to reach me.
             </p>
           </Reveal>
 
