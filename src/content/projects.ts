@@ -100,6 +100,120 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: "avionics-battery-mounts",
+    title: "Avionics & Battery Mounts",
+    summary:
+      "The flight controller stack and both LiPo packs have to live in a 1.94 L tapered airfoil bay. I designed the two parts that hold them, sized by RF and vibration constraints rather than by free volume.",
+    year: "2026",
+    date: "Sept 2026, REV 1",
+    categories: ["Mechanical"],
+    role: "Full component ownership",
+    stack: ["SolidWorks", "FDM (PLA)"],
+    source: { label: "UBC AeroDesign" },
+    cover: {
+      kind: "image",
+      src: "/work/mounts-assembly.jpg",
+      width: 1422,
+      height: 1366,
+      alt: "Both mounts seated between the ribs in the avionics bay",
+    },
+    blocks: [
+      {
+        kind: "image",
+        src: "/work/mounts-assembly.jpg",
+        width: 1422,
+        height: 1366,
+        alt: "Intended final assembly with both mounts seated between the ribs",
+        caption: "Figure 1 — intended final assembly, both mounts seated between the ribs",
+        wide: true,
+      },
+      {
+        kind: "text",
+        heading: "Approach",
+        body: [
+          "The bay is an airfoil section 15 in long and 5 in wide, 1.94 L on paper, but 2.5 in tall at the deepest point, tapering to half an inch, with ribs crossing it. Into that go the flight controller stack (STM32H723, barometer, 9-axis IMU, RTK GNSS), 4S and 2S LiPo packs, a 4-in-1 ESC, and four RF links.",
+          "Free volume was never the binding constraint. The integration rules were: the avionics stack must be rigidly mounted with no damping, because the IMU has to read true airframe acceleration; high-current propulsion wiring must not cross over the stack; transmit antennas must stay clear of the GNSS and RC receivers; and the ST-Link wires must exit the shell for external access. Each of those fixes a position before it fixes a volume.",
+        ],
+      },
+      {
+        kind: "list",
+        heading: "Key design decisions",
+        items: [
+          {
+            term: "Rigid mount, no isolation",
+            detail: "damping would filter out the accelerations the IMU exists to measure.",
+          },
+          {
+            term: "L-bracket for the PCB",
+            detail:
+              "the vertical flange bolts to the front frame, the thickest structure in a flying wing, and flexes enough to take some landing shock.",
+          },
+          {
+            term: "Velcro over fasteners for the batteries",
+            detail:
+              "packs swap between flights without tools, strap slots step fore and aft to trim CG, and a cross-span notch removes the last degree of freedom so the pack cannot slide in flight.",
+          },
+          {
+            term: "Cutouts placed by stress, not symmetry",
+            detail:
+              "tray windows and deck openings sit in low-stress regions, at a 1/16 in minimum wall for PLA.",
+          },
+        ],
+      },
+      {
+        kind: "specs",
+        heading: "Envelope and build",
+        rows: [
+          { label: "Bay volume", value: "1.94 L" },
+          { label: "Bay envelope", value: "15 x 5 in" },
+          { label: "Bay height", value: "2.5 to 0.5 in" },
+          { label: "Flight controller", value: "80 x 60 mm" },
+          { label: "Motor battery", value: "4S LiPo" },
+          { label: "Avionics battery", value: "2S LiPo" },
+          { label: "ESC", value: "45 x 41 x 7.3 mm" },
+          { label: "Fasteners", value: "M3" },
+          { label: "Minimum wall", value: "1/16 in" },
+          { label: "Material", value: "PLA, FDM" },
+          { label: "Aircraft", value: "ADV flying wing" },
+        ],
+      },
+      {
+        kind: "image",
+        src: "/work/mounts-bay-context.jpg",
+        width: 1331,
+        height: 749,
+        alt: "Ribs, spar and skin surrounding the electronics volume",
+        caption: "Bay context — ribs, spar and skin around the electronics volume",
+        wide: true,
+      },
+      {
+        kind: "image",
+        src: "/work/mounts-battery-tray.jpg",
+        width: 1600,
+        height: 1168,
+        alt: "Battery tray with 2x2 cutouts, 3x3 strap slots and corner notches",
+        caption: "Figure 2 — battery tray: 2x2 cutouts, 3x3 strap slots, corner notches",
+        wide: true,
+      },
+      {
+        kind: "image",
+        src: "/work/mounts-pcb.jpg",
+        width: 1600,
+        height: 1151,
+        alt: "PCB mount with integral standoffs, a front flange and deck windows",
+        caption: "Figure 3 — PCB mount: integral standoffs, front flange, deck windows",
+        wide: true,
+      },
+      {
+        kind: "text",
+        note: true,
+        body: [
+          "REV 1 is deliberately only a geometry and mounting problem, and the documentation says so: the tray does not electrically isolate, fireproof or cool the pack, and the PCB mount neither shields the board nor gives it a ground path. Writing those exclusions down as REV 2 scope is what made REV 1 finishable. The alternative is one part attempting thermal, electrical and structural problems at once and arriving after the test flight.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "payload-test-stand",
     title: "Payload Capture & Release Test Stand",
     summary:
