@@ -139,6 +139,7 @@ export function Intro() {
             rotationZ: 0,
             scale: 0.62,
             opacity: 0,
+            pointerEvents: "none",
           });
 
           // --- Entrance (wall-clock, not scroll-bound) -----------------------
@@ -181,6 +182,9 @@ export function Intro() {
               scrub: 1,
               anticipatePin: 1,
               invalidateOnRefresh: true,
+              onUpdate: (self) => {
+                gsap.set(".intro-progress-fill", { scaleY: self.progress });
+              },
               // This pin adds ~340vh of spacer, which moves every trigger below
               // it. A higher refreshPriority makes ScrollTrigger recalculate
               // this one first, so the header and the section reveals measure
@@ -204,7 +208,10 @@ export function Intro() {
             stagger: { each: 0.004, from: "random" },
             duration: 1.1,
           }, 0);
-          tl.to(".intro-cue", { opacity: 0, duration: 0.3 }, 0);
+          // The cue stays for the whole pin and only clears once the fan is
+          // dealt away. Progress is driven from the trigger, not the timeline,
+          // so it stays exact if the beat timings change.
+          tl.to(".intro-cue-wrap", { opacity: 0, duration: 0.6, immediateRender: false }, 9.8);
 
           // 2. The manifesto assembles out of the debris.
           tl.to(quoteChars, {
@@ -274,6 +281,12 @@ export function Intro() {
             ease: "power3.inOut",
           }, 7.0);
 
+          // Clickable for as long as they are on screen, not just during the
+          // hold. People reach for these cards, and a visible card that ignores
+          // a click is the same broken promise as one that was never clickable.
+          tl.set(cards, { pointerEvents: "auto" }, 6.2);
+          tl.set(cards, { pointerEvents: "none" }, 10.55);
+
           // 11. Hold the fan. This is the payoff, and the only moment the six
           //     labels are readable, so it gets roughly half a screen of scroll.
           tl.to({}, { duration: 1.6 }, 8.0);
@@ -311,7 +324,10 @@ export function Intro() {
         className="relative flex h-svh w-full flex-col items-center justify-center overflow-hidden px-gutter"
       >
         {/* Layer 1: identity */}
-        <div className="intro-name-layer absolute inset-0 flex flex-col items-center justify-center px-gutter text-center">
+        {/* pointer-events-none matters once the text shatters: the character
+            spans scatter across the viewport and stay at opacity 0, where they
+            would otherwise keep swallowing clicks meant for the deck. */}
+        <div className="intro-name-layer pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-gutter text-center">
           <h1 className="text-display font-medium">
             <span ref={nameRef}>Houze Guo</span>
           </h1>
@@ -334,18 +350,38 @@ export function Intro() {
           <div className="relative flex items-center justify-center [transform-style:preserve-3d]">
             {CARDS.map((card) => (
               <div key={card.label} className="deck-card absolute [transform-style:preserve-3d]">
-                <PlayingCard suit={card.suit} label={card.label} />
+                {/* The deck is decorative, so it stays out of the tab order and
+                    the accessibility tree; Skip intro is the equivalent control
+                    for keyboard and screen reader users. GSAP owns the wrapper's
+                    transform, so the hover lift lives on the inner element. */}
+                <button
+                  type="button"
+                  aria-hidden
+                  tabIndex={-1}
+                  onClick={() => scrollToId("#work")}
+                  className="group block cursor-pointer [transform-style:preserve-3d]"
+                >
+                  <PlayingCard
+                    suit={card.suit}
+                    label={card.label}
+                    className="transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover:-translate-y-3"
+                  />
+                </button>
               </div>
             ))}
             <TuckBox />
           </div>
         </div>
 
-        {/* Nested so the entrance owns the wrapper's opacity and the scrubbed
-            timeline owns the inner one. Same rule as the name layer. */}
-        <span className="intro-cue-wrap absolute bottom-10 opacity-0">
-          <span className="intro-cue label text-muted">Scroll</span>
-        </span>
+        {/* Persistent for the whole pinned sequence. The fill reports progress
+            so it is visible that scrolling is advancing something, which a pin
+            otherwise hides: the page does not move, only its contents. */}
+        <div className="intro-cue-wrap absolute bottom-8 flex flex-col items-center gap-3 opacity-0">
+          <span className="label text-muted">Scroll</span>
+          <span aria-hidden className="relative block h-14 w-px overflow-hidden bg-line">
+            <span className="intro-progress-fill absolute inset-0 origin-top scale-y-0 bg-ink" />
+          </span>
+        </div>
       </div>
 
       <button
