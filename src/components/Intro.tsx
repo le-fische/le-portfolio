@@ -353,13 +353,17 @@ export function Intro() {
                 {/* The deck is decorative, so it stays out of the tab order and
                     the accessibility tree; Skip intro is the equivalent control
                     for keyboard and screen reader users. GSAP owns the wrapper's
-                    transform, so the hover lift lives on the inner element. */}
+                    transform, so the hover lift lives on the inner element.
+                    `text-start` is load-bearing: the UA stylesheet sets
+                    `text-align: center` on <button> and Tailwind's preflight
+                    does not reset it, so without this the card's corner indices
+                    inherit centring and slide out of their corners. */}
                 <button
                   type="button"
                   aria-hidden
                   tabIndex={-1}
                   onClick={() => scrollToId("#work")}
-                  className="group block cursor-pointer [transform-style:preserve-3d]"
+                  className="group block cursor-pointer text-start [transform-style:preserve-3d]"
                 >
                   <PlayingCard
                     suit={card.suit}
