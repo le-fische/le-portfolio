@@ -33,12 +33,19 @@ export function TuckBox() {
       <div className="absolute top-0 right-0 h-full w-[60px] origin-right bg-stage brightness-125 [transform:translateZ(30px)_rotateY(-90deg)]" />
       <div className="absolute bottom-0 left-0 h-[60px] w-full origin-bottom bg-stage [transform:translateZ(30px)_rotateX(90deg)]" />
 
-      {/* Lid, hinged at the top edge */}
-      <div className="tuckbox-lid absolute top-0 left-0 flex h-[60px] w-full justify-center border-b border-white/10 bg-stage brightness-110 [transform-style:preserve-3d]">
-        {/* Tuck tab, folded out over the back face */}
-        <div className="absolute top-[58px] h-[30px] w-1/2 origin-top rounded-b-3xl bg-stage brightness-110 [transform:rotateX(90deg)_translateZ(1px)] [transform-style:preserve-3d]">
+      {/* Lid, hinged at the top edge.
+          The lift is a literal colour, not `brightness-110`. `filter` is a
+          grouping property: any value but `none` forces the used
+          `transform-style` to flat, which would collapse the tab into the
+          lid's plane and take the upper half of the seal with it. */}
+      <div className="tuckbox-lid absolute top-0 left-0 flex h-[60px] w-full justify-center border-b border-white/10 bg-[#0c0b0a] [transform-style:preserve-3d]">
+        {/* Tuck tab, folded out over the back face. Negative Z: the box meets
+            the camera at rotationY -180, so the face nearest the viewer is the
+            one at the most negative box-local Z. A positive offset here buries
+            the tab behind the back panel. */}
+        <div className="absolute top-[58px] h-[30px] w-1/2 origin-top rounded-b-3xl bg-[#0c0b0a] [transform:rotateX(90deg)_translateZ(-1px)] [transform-style:preserve-3d]">
           {/* Upper half of the tear seal */}
-          <div className="absolute top-0 left-1/2 h-[30px] w-14 -translate-x-1/2 rounded-t-sm bg-accent [transform:translateZ(1px)]" />
+          <div className="absolute top-0 left-1/2 h-[30px] w-14 -translate-x-1/2 rounded-t-sm bg-accent [transform:translateZ(-1px)]" />
         </div>
       </div>
     </div>
