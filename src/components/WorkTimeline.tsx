@@ -2,12 +2,18 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { CATEGORY_SUIT, isRedCategory, type Project } from "@/content/projects";
+import {
+  CATEGORIES,
+  CATEGORY_SUIT,
+  isRedCategory,
+  type Category,
+  type Project,
+} from "@/content/projects";
 import { SuitPips } from "./SuitPips";
 import { cn } from "@/lib/cn";
 
@@ -45,6 +51,27 @@ export function WorkTimeline({ projects }: { projects: Project[] }) {
   const xTo = useRef<QuickTo | null>(null);
   const yTo = useRef<QuickTo | null>(null);
   const [active, setActive] = useState<Project | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+
+  const filtered = selectedCategory
+    ? projects.filter((p) => p.categories.includes(selectedCategory))
+    : projects;
+
+  useEffect(() => {
+    const onSelectCategory = (e: Event) => {
+      const custom = e as CustomEvent<Category>;
+      if (custom.detail) {
+        setSelectedCategory(custom.detail);
+      }
+    };
+    window.addEventListener("select-category", onSelectCategory);
+    return () => window.removeEventListener("select-category", onSelectCategory);
+  }, []);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => cancelAnimationFrame(id);
+  }, [selectedCategory]);
 
   useGSAP(
     () => {
@@ -81,7 +108,76 @@ export function WorkTimeline({ projects }: { projects: Project[] }) {
 
   return (
     <div ref={rootRef} className="relative" onMouseMove={track}>
-      <ol className="relative">
+      {/* Suit / discipline filter bar */}
+      <div
+        role="group"
+        aria-label="Filter projects by discipline"
+        className="mb-6 flex flex-wrap items-center gap-2"
+      >
+        <button
+          type="button"
+          aria-pressed={selectedCategory === null}
+          onClick={() => setSelectedCategory(null)}
+          className={cn(
+            "label inline-flex min-h-8 cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 transition-[color,border-color,background-color,transform] duration-150 active:scale-[0.97]",
+            selectedCategory === null
+              ? "border-ink bg-ink text-canvas"
+              : "border-line bg-canvas text-muted hover:border-ink hover:text-ink",
+          )}
+        >
+          <span>All</span>
+          <span className={selectedCategory === null ? "text-canvas/70" : "text-muted/70"}>
+            {String(projects.length).padStart(2, "0")}
+          </span>
+        </button>
+
+        {CATEGORIES.map((category) => {
+          const isSelected = selectedCategory === category;
+          const count = projects.filter((p) => p.categories.includes(category)).length;
+          return (
+            <button
+              key={category}
+              type="button"
+              aria-pressed={isSelected}
+              onClick={() => setSelectedCategory(isSelected ? null : category)}
+              className={cn(
+                "label inline-flex min-h-8 cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 transition-[color,border-color,background-color,transform] duration-150 active:scale-[0.97]",
+                isSelected
+                  ? "border-ink bg-ink text-canvas"
+                  : "border-line bg-canvas text-muted hover:border-ink hover:text-ink",
+              )}
+            >
+              <span
+                aria-hidden
+                className={cn(
+                  "text-xs leading-none",
+                  isSelected
+                    ? isRedCategory(category)
+                      ? "text-[#ff6b6b]"
+                      : "text-canvas"
+                    : isRedCategory(category)
+                      ? "text-accent"
+                      : "text-ink",
+                )}
+              >
+                {CATEGORY_SUIT[category]}
+              </span>
+              <span>{category}</span>
+              <span className={isSelected ? "text-canvas/70" : "text-muted/70"}>
+                {String(count).padStart(2, "0")}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <p role="status" aria-live="polite" className="visually-hidden">
+        {selectedCategory
+          ? `Showing ${filtered.length} of ${projects.length} projects in ${selectedCategory}`
+          : `Showing all ${projects.length} projects`}
+      </p>
+
+      <ol role="list" className="relative">
         {/* One continuous spine, masked at both ends so it fades in and out
             instead of stopping dead above the first node. */}
         <span
@@ -92,8 +188,8 @@ export function WorkTimeline({ projects }: { projects: Project[] }) {
           )}
         />
 
-        {projects.map((project, i) => {
-          const showYear = i === 0 || projects[i - 1].year !== project.year;
+        {filtered.map((project, i) => {
+          const showYear = i === 0 || filtered[i - 1].year !== project.year;
 
           return (
             <li key={project.slug} className="timeline-row border-b border-line">
@@ -103,7 +199,7 @@ export function WorkTimeline({ projects }: { projects: Project[] }) {
                 onMouseLeave={() => setActive(null)}
                 onFocus={() => setActive(project)}
                 onBlur={() => setActive(null)}
-                className="group flex items-center gap-4 py-6 md:gap-8"
+                className="group flex items-center gap-4 py-6 transition-transform duration-150 active:scale-[0.995] md:gap-8"
               >
                 {/* Year, shown once per group so the spine reads as a timeline. */}
                 <span className="label w-10 shrink-0 text-muted md:w-14">
@@ -115,24 +211,29 @@ export function WorkTimeline({ projects }: { projects: Project[] }) {
                   aria-hidden
                   className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-canvas"
                 >
-                  <span className="h-1.5 w-1.5 rounded-full bg-muted transition-all duration-300 group-hover:h-2.5 group-hover:w-2.5 group-hover:bg-accent" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-muted transition-all duration-300 group-hover:h-2.5 group-hover:w-2.5 group-hover:bg-accent group-focus-visible:h-2.5 group-focus-visible:w-2.5 group-focus-visible:bg-accent" />
                 </span>
 
-                <span className="flex flex-1 items-baseline gap-3 transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover:translate-x-1.5">
-                  <SuitPips categories={project.categories} className="text-sm" />
-                  <span className="text-h3">
-                    {project.title}
-                    {project.draft && <span className="label ml-3 text-muted/70">Placeholder</span>}
+                <span className="flex flex-1 flex-col gap-1 transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5">
+                  <span className="flex items-baseline gap-3">
+                    <SuitPips categories={project.categories} className="text-sm" />
+                    <span className="text-h3">
+                      {project.title}
+                      {project.draft && <span className="label ml-3 text-muted/70">Placeholder</span>}
+                    </span>
+                  </span>
+                  <span className="label text-muted md:hidden">
+                    {project.categories.join(" / ")}
                   </span>
                 </span>
 
-                <span className="label hidden shrink-0 text-muted transition-colors duration-300 group-hover:text-ink md:block">
+                <span className="label hidden shrink-0 text-muted transition-colors duration-300 group-hover:text-ink group-focus-visible:text-ink md:block">
                   {project.categories.join(" / ")}
                 </span>
 
                 <span
                   aria-hidden
-                  className="label shrink-0 text-muted opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  className="label shrink-0 text-muted opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 [@media(hover:none)]:opacity-60"
                 >
                   &rarr;
                 </span>

@@ -27,7 +27,7 @@ function BlockView({ block, index }: { block: Block; index: number }) {
     // A note is the closing reflection: same measure, quieter, set against a rule.
     return (
       <Reveal className={cn("w-full max-w-2xl", block.note && "border-l border-line pl-6")}>
-        {block.heading && <h2 className="text-h2 mb-6 font-medium">{block.heading}</h2>}
+        {block.heading && <h2 className="text-h2 mb-6 font-medium text-balance">{block.heading}</h2>}
         <div className={cn("space-y-5 text-body text-muted", block.note && "italic")}>
           {block.body.map((paragraph, i) => (
             <p key={i}>{paragraph}</p>
@@ -40,8 +40,8 @@ function BlockView({ block, index }: { block: Block; index: number }) {
   if (block.kind === "list") {
     return (
       <Reveal className="w-full max-w-2xl">
-        {block.heading && <h2 className="text-h2 mb-6 font-medium">{block.heading}</h2>}
-        <ul className="space-y-4">
+        {block.heading && <h2 className="text-h2 mb-6 font-medium text-balance">{block.heading}</h2>}
+        <ul role="list" className="space-y-4">
           {block.items.map((item, i) => (
             <li key={i} className="flex gap-4 text-body">
               <span aria-hidden className="mt-[0.7em] h-px w-4 shrink-0 bg-line" />
@@ -59,7 +59,7 @@ function BlockView({ block, index }: { block: Block; index: number }) {
   if (block.kind === "specs") {
     return (
       <Reveal className="w-full max-w-2xl">
-        {block.heading && <h2 className="text-h2 mb-6 font-medium">{block.heading}</h2>}
+        {block.heading && <h2 className="text-h2 mb-6 font-medium text-balance">{block.heading}</h2>}
         <dl className="border-t border-line">
           {block.rows.map((row) => (
             <div
@@ -67,7 +67,7 @@ function BlockView({ block, index }: { block: Block; index: number }) {
               className="flex items-baseline justify-between gap-6 border-b border-line py-3"
             >
               <dt className="label text-muted">{row.label}</dt>
-              <dd className="text-small text-right">{row.value}</dd>
+              <dd className="text-small text-right tabular-nums">{row.value}</dd>
             </div>
           ))}
         </dl>
@@ -93,21 +93,22 @@ export default async function ProjectPage({ params }: Params) {
   if (!project) notFound();
 
   const position = projects.findIndex((p) => p.slug === project.slug);
+  const prev = projects[(position - 1 + projects.length) % projects.length];
   const next = projects[(position + 1) % projects.length];
 
   return (
     <>
       <SiteHeader alwaysVisible />
 
-      <main className="px-gutter pt-32 pb-section">
+      <main id="main-content" tabIndex={-1} className="px-gutter pt-32 pb-section outline-none">
         <div className="mx-auto max-w-5xl">
           {/* Same pill as the intro's skip control, so "get me out of here"
               looks the same wherever it appears. */}
           <Link
             href="/#work"
-            className="label group inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 text-muted transition-colors hover:border-ink hover:text-ink"
+            className="label group inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 text-muted transition-[color,border-color,transform] duration-150 hover:border-ink hover:text-ink active:scale-[0.97]"
           >
-            <span aria-hidden className="transition-transform duration-300 group-hover:-translate-x-0.5">
+            <span aria-hidden className="transition-transform duration-300 group-hover:-translate-x-0.5 group-focus-visible:-translate-x-0.5">
               &larr;
             </span>
             All work
@@ -148,9 +149,11 @@ export default async function ProjectPage({ params }: Params) {
                       href={link.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                      aria-label={`Open ${link.label}`}
+                      className="inline-flex items-baseline gap-1 underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
                     >
-                      Open
+                      <span>Open</span>
+                      <span aria-hidden className="text-xs">&#8599;</span>
                     </a>
                   </dd>
                 </div>
@@ -165,9 +168,10 @@ export default async function ProjectPage({ params }: Params) {
                         href={project.source.href}
                         target="_blank"
                         rel="noreferrer"
-                        className="underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                        className="inline-flex items-baseline gap-1 underline decoration-line underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
                       >
-                        {project.source.label}
+                        <span>{project.source.label}</span>
+                        <span aria-hidden className="text-xs">&#8599;</span>
                       </a>
                     ) : (
                       project.source.label
@@ -188,14 +192,39 @@ export default async function ProjectPage({ params }: Params) {
         </div>
       </main>
 
-      <nav className="border-t border-line px-gutter py-10">
-        <div className="mx-auto flex max-w-5xl items-baseline justify-between gap-6">
-          <Link href="/#work" className="label text-muted transition-colors hover:text-ink">
-            &larr; All work
+      <nav aria-label="Case study pagination" className="border-t border-line px-gutter py-10">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 items-baseline gap-6 sm:grid-cols-3">
+          <Link href={`/work/${prev.slug}`} className="group text-left">
+            <span className="label flex items-center gap-1.5 text-muted">
+              <span aria-hidden className="transition-transform duration-300 group-hover:-translate-x-0.5">
+                &larr;
+              </span>
+              Previous
+              <SuitPips categories={prev.categories} className="ml-1 text-xs" />
+            </span>
+            <span className="text-h3 mt-1 block decoration-accent decoration-1 underline-offset-[6px] group-hover:underline group-focus-visible:underline">
+              {prev.title}
+            </span>
           </Link>
+
+          <div className="hidden text-center sm:block">
+            <Link
+              href="/#work"
+              className="label inline-flex min-h-6 items-center py-1 text-muted transition-colors hover:text-ink"
+            >
+              Index ({String(position + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")})
+            </Link>
+          </div>
+
           <Link href={`/work/${next.slug}`} className="group text-right">
-            <span className="label block text-muted">Next</span>
-            <span className="text-h3 decoration-accent decoration-1 underline-offset-[6px] group-hover:underline">
+            <span className="label flex items-center justify-end gap-1.5 text-muted">
+              <SuitPips categories={next.categories} className="mr-1 text-xs" />
+              Next
+              <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">
+                &rarr;
+              </span>
+            </span>
+            <span className="text-h3 mt-1 block decoration-accent decoration-1 underline-offset-[6px] group-hover:underline group-focus-visible:underline">
               {next.title}
             </span>
           </Link>

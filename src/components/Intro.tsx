@@ -159,8 +159,9 @@ export function Intro() {
           gsap.to(".intro-cue-wrap", { opacity: 1, duration: 0.8, delay: 1.4 });
 
           // The skip affordance retires once the sequence is behind you.
+          // autoAlpha toggles visibility so it leaves the keyboard tab order when hidden.
           gsap.to(".intro-skip", {
-            opacity: 0,
+            autoAlpha: 0,
             pointerEvents: "none",
             duration: 0.3,
             scrollTrigger: {
@@ -362,13 +363,18 @@ export function Intro() {
                   type="button"
                   aria-hidden
                   tabIndex={-1}
-                  onClick={() => scrollToId("#work")}
+                  onClick={() => {
+                    window.dispatchEvent(
+                      new CustomEvent("select-category", { detail: card.label }),
+                    );
+                    scrollToId("#work");
+                  }}
                   className="group block cursor-pointer text-start [transform-style:preserve-3d]"
                 >
                   <PlayingCard
                     suit={card.suit}
                     label={card.label}
-                    className="transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover:-translate-y-3"
+                    className="transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover:-translate-y-3 group-active:scale-[0.97]"
                   />
                 </button>
               </div>
@@ -391,7 +397,7 @@ export function Intro() {
       <button
         type="button"
         onClick={() => scrollToId("#work")}
-        className="intro-skip label fixed right-gutter bottom-8 z-50 rounded-full border border-line bg-canvas/80 px-4 py-2.5 text-muted backdrop-blur transition-colors hover:border-ink hover:text-ink"
+        className="intro-skip label fixed right-gutter bottom-8 z-50 cursor-pointer rounded-full border border-line bg-canvas/80 px-4 py-2.5 text-muted backdrop-blur transition-[color,border-color,transform] duration-150 hover:border-ink hover:text-ink active:scale-[0.97]"
       >
         Skip intro
       </button>

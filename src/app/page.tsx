@@ -70,7 +70,7 @@ export default function Home() {
       <SiteHeader />
       <Intro />
 
-      <main>
+      <main id="main-content" tabIndex={-1} className="outline-none">
         {/* ---------------------------------------------------------------- */}
         <section id="work" className="scroll-mt-20 px-gutter py-section">
           <Reveal>
@@ -165,19 +165,27 @@ export default function Home() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <ul className="mt-16 max-w-3xl">
+            <ul role="list" className="mt-16 max-w-3xl">
               {CONTACT.map((item) => (
                 <li key={item.label} className="border-t border-line last:border-b">
                   <a
                     href={item.href}
                     target={item.href.startsWith("mailto") ? undefined : "_blank"}
                     rel="noreferrer"
-                    className="group flex items-baseline justify-between gap-6 py-5 transition-colors hover:text-accent"
+                    className="group flex items-baseline justify-between gap-6 py-5 transition-colors hover:text-accent focus-visible:text-accent"
                   >
-                    <span className="label text-muted transition-colors group-hover:text-accent">
+                    <span className="label text-muted transition-colors group-hover:text-accent group-focus-visible:text-accent">
                       {item.label}
                     </span>
-                    <span className="text-h3">{item.value}</span>
+                    <span className="flex items-baseline gap-2.5 text-h3">
+                      <span>{item.value}</span>
+                      <span
+                        aria-hidden
+                        className="label text-muted transition-transform duration-300 ease-[var(--ease-out-expo)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent group-focus-visible:translate-x-0.5 group-focus-visible:-translate-y-0.5 group-focus-visible:text-accent"
+                      >
+                        &#8599;
+                      </span>
+                    </span>
                   </a>
                 </li>
               ))}
@@ -191,8 +199,11 @@ export default function Home() {
           <FullSuit />
           <span className="label text-muted">Houze Guo &copy; {new Date().getFullYear()}</span>
         </span>
-        <Link href="#intro" className="label text-muted transition-colors hover:text-ink">
-          Back to top
+        <Link
+          href="#intro"
+          className="label inline-flex min-h-6 items-center py-1 text-muted transition-colors hover:text-ink"
+        >
+          Back to top &uarr;
         </Link>
       </footer>
     </>
